@@ -1,0 +1,37 @@
+{block content}
+
+
+<div style="position: absolute; z-index: 100; background: white; top: 100px; left: 100px;">
+    <ul>
+        <li><a n:href="ring!">Prozvonit</a></li>
+        <li><a n:href="lock!">Uzamknout</a></li>
+        <li><a n:href="locate!">Lokalizovat</a></li>
+        <li><a n:href="ping!">Ping</a></li>
+    </ul>
+    <hr />
+    <ul n:inner-foreach="$messages as $message">
+        <li>{$message->getClassName()}</li>
+    </ul>
+</div>
+
+
+
+{dump $messages}
+
+<div id="map-canvas"></div>
+
+
+
+
+
+<script type="text/javascript">
+      function initialize() {
+        var mapOptions = {
+          center: { lat: {$pos->lat}, lng: {$pos->lng} },
+          zoom: {$pos->zoom}
+        };
+        var map = new google.maps.Map(document.getElementById('map-canvas'),
+            mapOptions);
+      }
+      google.maps.event.addDomListener(window, 'load', initialize);
+</script>

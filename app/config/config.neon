@@ -1,0 +1,52 @@
+#
+# SECURITY WARNING: it is CRITICAL that this file & directory are NOT accessible directly via a web browser!
+#
+# If you don't protect this directory from direct web access, anybody will be able to see your passwords.
+# http://nette.org/security-warning
+#
+parameters:
+    google:
+        apiKey:  # in config.local.neon
+    map:
+        defaultPosition:
+            lat: 49.2020701
+            lng: 16.5779606
+            zoom: 13
+
+php:
+	date.timezone: Europe/Prague
+
+
+extensions:
+    console: Kdyby\Console\DI\ConsoleExtension
+    events: Kdyby\Events\DI\EventsExtension
+    annotations: Kdyby\Annotations\DI\AnnotationsExtension
+    doctrine: Kdyby\Doctrine\DI\OrmExtension
+    google: Kdyby\Google\DI\GoogleExtension
+
+doctrine:
+    user:  # in config.local.neon
+    password:  # in config.local.neon
+    dbname:  # in config.local.neon
+    metadata:
+        App: %appDir%
+google:
+    clientId: # in config.local.neon
+    clientSecret: # in config.local.neon
+    returnUri: 'Sign:in'(do=googleLogin-response)
+
+nette:
+	application:
+		errorPresenter: Error
+		mapping:
+			*: App\*Module\Presenters\*Presenter
+
+	session:
+		expiration: 14 days
+
+
+services:
+	- App\Model\UserManager
+	- App\RouterFactory
+	- CodeMonkeysRu\GCM\Sender(%google.apiKey%)
+	router: @App\RouterFactory::createRouter

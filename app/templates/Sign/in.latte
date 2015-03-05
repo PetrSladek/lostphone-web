@@ -1,0 +1,10 @@
+{layout @layout.latte}
+
+{block content}
+<h1 n:block=title>Přihlaste se!</h1>
+
+{*{control signInForm}*}
+
+<a n:href="googleLogin-open!">Přihlásit svým Google účtem</a>
+
+{* or use {include '../components/form.latte', form => signInForm} *}
