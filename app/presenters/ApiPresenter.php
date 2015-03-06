@@ -3,6 +3,7 @@
 namespace App\Presenters;
 
 use App\Model\Commands\Command;
+use App\Model\Device;
 use App\Model\Messages\LocationMessage;
 use App\Model\Messages\Message;
 use App\Model\Messages\PongMessage;
@@ -10,6 +11,7 @@ use App\Model\Messages\RegistrationMessage;
 use App\Model\Messages\RingingTimeoutMessage;
 use App\Model\Messages\UnlockMessage;
 use App\Model\Messages\WrongPassMessage;
+use App\Model\User;
 use Kdyby\Doctrine\EntityManager;
 use Nette\Application\Responses\TextResponse;
 use Nette\Utils\ArrayHash;
@@ -79,26 +81,45 @@ class ApiPresenter extends BasePresenter
                 $msg->setGoogleAccountEmail($this->input->googleAccountEmail);
                 $msg->setBrand($this->input->brand);
                 $msg->setModel($this->input->model);
+
+                $device = new Device();
+                $device->setName( sprintf("%s %s", $msg->getBrand(), $msg->getModel()));
+                $device->setIdentifier($msg->getIdentifier());
+                $device->setRegistrationMessage($msg);
+
+                // najdi ownera podle emailu
+                $owner = $this->em->getRepository(User::getClassName())->findOneBy(['googleEmail'=>$msg->getGoogleAccountEmail()]);
+                if($owner)
+                    $device->setOwner($owner);
+
+                $this->em->persist($device);
+
                 break;
+
             case Message::TYPE_GOTCHA:
                 $msg = new RingingTimeoutMessage();
                 break;
+
             case Message::TYPE_RINGINGTIMEOUT:
                 $msg = new RingingTimeoutMessage();
             break;
+
             case Message::TYPE_UNLOCK:
                 $msg = new UnlockMessage();
             break;
+
             case Message::TYPE_WRONGPASS:
                 $msg = new WrongPassMessage();
                 // TODO save Photo
                 $msg->setFrontPhoto(null);
             break;
+
             case Message::TYPE_LOCATION:
                 $msg = new LocationMessage();
                 $msg->setLat($this->input->lat);
                 $msg->setLng($this->input->lng);
                 break;
+
             default:
                 $this->sendResponse(new TextResponse(1));
                 $this->terminate();

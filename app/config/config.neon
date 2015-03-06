@@ -46,7 +46,6 @@ nette:
 
 
 services:
-	- App\Model\UserManager
 	- App\RouterFactory
 	- CodeMonkeysRu\GCM\Sender(%google.apiKey%)
 	router: @App\RouterFactory::createRouter
