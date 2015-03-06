@@ -1,18 +1,46 @@
 {block content}
 
 
-<div style="position: absolute; z-index: 100; background: white; top: 100px; left: 100px;">
-    <ul>
-        <li><a n:href="ring!">Prozvonit</a></li>
-        <li><a n:href="lock!">Uzamknout</a></li>
-        <li><a n:href="locate!">Lokalizovat</a></li>
-        <li><a n:href="ping!">Ping</a></li>
-    </ul>
-    <hr />
-    <ul n:inner-foreach="$messages as $message">
-        <li>{$message->getClassName()}</li>
-    </ul>
+<div class="panel panel-primary" style="position: absolute; z-index: 100; top: 100px; left: 100px;">
+    <div class="panel-heading">
+        Příkazy
+    </div>
+    <div class="panel-body">
+        <ul>
+            <li><a n:href="ring!">Prozvonit</a></li>
+            <li><a n:href="lock!">Uzamknout</a></li>
+            <li><a n:href="locate!">Lokalizovat</a></li>
+            <li><a n:href="ping!">Ping</a></li>
+        </ul>
+    </div>
 </div>
+
+
+<div class="panel panel-default" style="position: absolute; z-index: 100; top: 100px; right: 100px;">
+    <div class="panel-heading">
+        Zprávy z telefonu
+    </div>
+    <div class="panel-body" snippet="messages">
+        <div n:foreach="$messages as $message">
+        <small>{$message->dateSent->format('j.n.Y H:i:s')}</small><br />
+        {if $message->isType($message::TYPE_PONG)}
+            Pong!
+        {elseif $message->isType($message::TYPE_GOTCHA)}
+            Mám tě!
+        {elseif $message->isType($message::TYPE_RINGINGTIMEOUT)}
+            Prozvonení přestalo..
+        {elseif $message->isType($message::TYPE_UNLOCK)}
+            Odemknuto!
+        {elseif $message->isType($message::TYPE_WRONGPASS)}
+            Pokus o odemčení!
+        {elseif $message->isType($message::TYPE_LOCATION)}
+            Lokalizováno na <strong>{$message->lat}</strong>, <strong>{$message->lng}</strong>
+        {/if}
+        </div>
+    </div>
+</div>
+
+
 
 
 

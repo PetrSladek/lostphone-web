@@ -6,7 +6,7 @@
  * Time: 22:21
  */
 
-namespace app\model;
+namespace App\Model;
 
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;

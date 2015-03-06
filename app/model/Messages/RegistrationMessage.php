@@ -32,7 +32,7 @@ class RegistrationMessage extends Message {
      * @Column(type="string")
      * @var string
      */
-    protected $imei;
+    protected $identifier;
 
     /**
      * @Column(type="string")
@@ -46,20 +46,35 @@ class RegistrationMessage extends Message {
      */
     protected $googleAccountEmail;
 
+
+
+    /**
+     * @Column(type="string", nullable=true)
+     * @var string
+     */
+    protected $brand;
+
+    /**
+     * @Column(type="string", nullable=true)
+     * @var string
+     */
+    protected $model;
+
+
     /**
      * @return string
      */
-    public function getImei()
+    public function getIdentifier()
     {
-        return $this->imei;
+        return $this->identifier;
     }
 
     /**
-     * @param string $imei
+     * @param string $identifier
      */
-    public function setImei($imei)
+    public function setIdentifier($identifier)
     {
-        $this->imei = $imei;
+        $this->identifier = $identifier;
     }
 
     /**
@@ -93,6 +108,41 @@ class RegistrationMessage extends Message {
     {
         $this->googleAccountEmail = $googleAccountEmail;
     }
+
+    /**
+     * @return string
+     */
+    public function getBrand()
+    {
+        return $this->brand;
+    }
+
+    /**
+     * @param string $brand
+     */
+    public function setBrand($brand)
+    {
+        $this->brand = $brand;
+    }
+
+    /**
+     * @return string
+     */
+    public function getModel()
+    {
+        return $this->model;
+    }
+
+    /**
+     * @param string $model
+     */
+    public function setModel($model)
+    {
+        $this->model = $model;
+    }
+
+
+
 
 
 

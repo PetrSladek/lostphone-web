@@ -54,6 +54,11 @@ abstract class Message extends BaseEntity {
     public abstract function getType();
 
 
+    public function isType($type) {
+        return $this->getType() === $type;
+    }
+
+
 
 
     /**

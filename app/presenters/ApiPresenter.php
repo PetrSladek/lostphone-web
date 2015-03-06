@@ -75,8 +75,10 @@ class ApiPresenter extends BasePresenter
             case Message::TYPE_REGISTRATION:
                 $msg = new RegistrationMessage();
                 $msg->setGcmId($this->input->gcmId);
-                $msg->setImei($this->input->imei);
+                $msg->setIdentifier($this->input->identifier);
                 $msg->setGoogleAccountEmail($this->input->googleAccountEmail);
+                $msg->setBrand($this->input->brand);
+                $msg->setModel($this->input->model);
                 break;
             case Message::TYPE_GOTCHA:
                 $msg = new RingingTimeoutMessage();

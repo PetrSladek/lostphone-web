@@ -59,7 +59,7 @@ class HomepagePresenter extends BasePresenter
         if($lastLocalization) {
             $pos->lat = $lastLocalization->getLat();
             $pos->lng = $lastLocalization->getLng();
-            $pos->zoom = 13;
+            $pos->zoom = 15;
         } else {
             $pos->lat = (float) $this->config->map->defaultPosition->lat;
             $pos->lng = (float) $this->config->map->defaultPosition->lng;
@@ -67,6 +67,11 @@ class HomepagePresenter extends BasePresenter
         }
         $this->template->pos = $pos;
 
+
+        if($this->isAjax()) {
+            $this->payload->position = $pos;
+            $this->redrawControl('message');
+        }
     }
 
 
