@@ -10,6 +10,7 @@ use App\Model\Messages\Message;
 use App\Model\Messages\PongMessage;
 use App\Model\Messages\RegistrationMessage;
 use App\Model\Messages\RingingTimeoutMessage;
+use App\Model\Messages\SimStateChangedMessage;
 use App\Model\Messages\UnlockMessage;
 use App\Model\Messages\WrongPassMessage;
 use App\Model\User;
@@ -131,6 +132,20 @@ class ApiPresenter extends BasePresenter
                 $msg->setLng($this->input->lng);
                 break;
 
+            case Message::TYPE_SIMSTATECHANGED:
+                $msg = new SimStateChangedMessage();
+                $msg->setImei($this->input->imei);
+                $msg->setSubscriberId($this->input->subscriberId);
+                $msg->setPhoneNumber($this->input->phoneNumber);
+                $msg->setNetworkOperator($this->input->networkOperator);
+                $msg->setNetworkOperatorName($this->input->networkOperatorName);
+                $msg->setNetworkCountryIso($this->input->networkCountryIso);
+                $msg->setSimOperator($this->input->simOperator);
+                $msg->setSimOperatorName($this->input->simOperatorName);
+                $msg->setSimCountryIso($this->input->simCountryIso);
+                $msg->setSimSerialNumber($this->input->simSerialNumber);
+            break;
+
             default:
                 $this->sendResponse(new TextResponse(1));
                 $this->terminate();
@@ -138,13 +153,19 @@ class ApiPresenter extends BasePresenter
         }
 
         $msg->setDateSent(new DateTime($this->input->date));
-        $this->device->addMessage($msg);
 
-        $this->em->persist($msg);
-        $this->em->flush();
+        if($this->device) {
+            $this->device->addMessage($msg);
+
+            $this->em->persist($msg);
+            $this->em->flush();
+
+            $this->sendResponse(new TextResponse(0));
+        } else {
+            $this->sendResponse(new TextResponse(1));
+        }
 
 
-        $this->sendResponse(new TextResponse(0));
     }
 
 

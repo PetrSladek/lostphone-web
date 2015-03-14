@@ -71,6 +71,23 @@
         {elseif $message->isType($message::TYPE_LOCATION)}
             <small>{$message->dateSent->format('j.n.Y H:i:s')}</small><br />
             Lokalizováno na <strong>{$message->lat}</strong>, <strong>{$message->lng}</strong>
+        {elseif $message->isType($message::TYPE_SIMSTATECHANGED)}
+            <small>{$message->dateSent->format('j.n.Y H:i:s')}</small><br />
+            Stav SIM karty <br />
+<pre>
+Tel. číslo: {$message->phoneNumber}
+IMEI: {$message->imei}
+SubscriberID: {$message->subscriberId}
+Síť SIM karty:
+    {$message->simOperator}
+    {$message->simOperatorName}
+    {$message->simCountryIso}
+    S/N: {$message->simSerialNumber}
+Přihlášená síť:
+    {$message->networkOperator}
+    {$message->networkOperatorName}
+    {$message->networkCountryIso}
+</pre>
         {/if}
         </div>
     </div>

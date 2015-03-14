@@ -27,7 +27,8 @@ use Kdyby\Doctrine\Entities\BaseEntity;
  *  Message::TYPE_RINGINGTIMEOUT = "RingingTimeoutMessage",
  *  Message::TYPE_UNLOCK = "UnlockMessage",
  *  Message::TYPE_WRONGPASS = "WrongPassMessage",
- *  Message::TYPE_LOCATION = "LocationMessage"
+ *  Message::TYPE_LOCATION = "LocationMessage",
+ *  Message::TYPE_SIMSTATECHANGED = "SimStateChangedMessage"
  * })
  */
 abstract class Message extends BaseEntity {
@@ -41,6 +42,8 @@ abstract class Message extends BaseEntity {
     const TYPE_UNLOCK            = 0x0004;
     const TYPE_WRONGPASS         = 0x0005;
     const TYPE_LOCATION          = 0x0006;
+    const TYPE_SIMSTATECHANGED   = 0x0007;
+
 
     /**
      * @Column(type="datetime", nullable=true)
@@ -48,14 +51,11 @@ abstract class Message extends BaseEntity {
      */
     protected $dateSent;
 
-
-
     /**
      * @ManyToOne(targetEntity="App\Model\Device", inversedBy="messages")
      * @var Device
      */
     protected $device;
-
 
     /**
      * @return int
