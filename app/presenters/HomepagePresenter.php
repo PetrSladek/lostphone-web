@@ -3,6 +3,7 @@
 namespace App\Presenters;
 
 use App\Model\Commands\Command;
+use App\Model\Commands\GetLogCommand;
 use App\Model\Commands\LocateCommand;
 use App\Model\Commands\LockCommand;
 use App\Model\Commands\PingCommand;
@@ -153,6 +154,13 @@ class HomepagePresenter extends BasePresenter
     }
 
 
+    public function handlePing()
+    {
+        $cmd = new PingCommand();
+        $this->sendCommand($cmd);
+
+        $this->isAjax() ? $this->redrawControl() : $this->redirect('this');
+    }
 
     public function handleRing()
     {
@@ -184,13 +192,14 @@ class HomepagePresenter extends BasePresenter
         $this->isAjax() ? $this->redrawControl() : $this->redirect('this');
     }
 
-    public function handlePing()
+    public function handleGetLog()
     {
-        $cmd = new PingCommand();
+        $cmd = new GetLogCommand();
         $this->sendCommand($cmd);
 
         $this->isAjax() ? $this->redrawControl() : $this->redirect('this');
     }
+
 
 
 

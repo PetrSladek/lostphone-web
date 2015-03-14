@@ -24,13 +24,13 @@ class LocationMessage extends Message {
      * @Column(type="decimal", precision=8, scale=6)
      * @var float
      */
-    private $lat;
+    protected $lat;
 
     /**
      * @Column(type="decimal", precision=8, scale=6)
      * @var float
      */
-    private $lng;
+    protected $lng;
 
 
 

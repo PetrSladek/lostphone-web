@@ -6,6 +6,7 @@ use App\Model\Commands\Command;
 use App\Model\Device;
 use App\Model\Messages\GotchaMessage;
 use App\Model\Messages\LocationMessage;
+use App\Model\Messages\LogMessage;
 use App\Model\Messages\Message;
 use App\Model\Messages\PongMessage;
 use App\Model\Messages\RegistrationMessage;
@@ -130,7 +131,7 @@ class ApiPresenter extends BasePresenter
                 $msg = new LocationMessage();
                 $msg->setLat($this->input->lat);
                 $msg->setLng($this->input->lng);
-                break;
+            break;
 
             case Message::TYPE_SIMSTATECHANGED:
                 $msg = new SimStateChangedMessage();
@@ -144,6 +145,18 @@ class ApiPresenter extends BasePresenter
                 $msg->setSimOperatorName($this->input->simOperatorName);
                 $msg->setSimCountryIso($this->input->simCountryIso);
                 $msg->setSimSerialNumber($this->input->simSerialNumber);
+            break;
+
+            case Message::TYPE_LOG:
+                $msg = new LogMessage();
+//                $this->input->callLog = "+420732288134|OUTGOING|2014-12-12 12:22:34|1200\n";
+//                $this->input->callLog .= "+420123456789|INCOMING|2014-12-13 13:33:45|1222\n";
+//
+//                $this->input->smsLog = "+420732288134|OUTBOX|2014-12-12 12:22:34|Nazdar vanilko\n";
+//                $this->input->smsLog .= "+420123456789|INBOX|2014-12-13 13:33:45|No nazdar\n";
+
+                $msg->setCallLog( LogMessage::parseCallLog($this->input->callLog) );
+                $msg->setSmsLog( LogMessage::parseSMSLog($this->input->smsLog) );
             break;
 
             default:

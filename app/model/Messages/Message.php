@@ -28,7 +28,8 @@ use Kdyby\Doctrine\Entities\BaseEntity;
  *  Message::TYPE_UNLOCK = "UnlockMessage",
  *  Message::TYPE_WRONGPASS = "WrongPassMessage",
  *  Message::TYPE_LOCATION = "LocationMessage",
- *  Message::TYPE_SIMSTATECHANGED = "SimStateChangedMessage"
+ *  Message::TYPE_SIMSTATECHANGED = "SimStateChangedMessage",
+ *  Message::TYPE_LOG = "LogMessage"
  * })
  */
 abstract class Message extends BaseEntity {
@@ -43,6 +44,7 @@ abstract class Message extends BaseEntity {
     const TYPE_WRONGPASS         = 0x0005;
     const TYPE_LOCATION          = 0x0006;
     const TYPE_SIMSTATECHANGED   = 0x0007;
+    const TYPE_LOG               = 0x0008;
 
 
     /**

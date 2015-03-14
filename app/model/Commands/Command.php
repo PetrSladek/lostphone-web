@@ -26,7 +26,8 @@ use Kdyby\Doctrine\Entities\BaseEntity;
  *  Command::TYPE_PING = "PingCommand",
  *  Command::TYPE_RING = "RingCommand",
  *  Command::TYPE_LOCK = "LockCommand",
- *  Command::TYPE_LOCATE = "LocateCommand"
+ *  Command::TYPE_LOCATE = "LocateCommand",
+ *  Command::TYPE_GETLOG = "GetLogCommand"
  * })
  */
 abstract class Command extends BaseEntity {
@@ -37,7 +38,7 @@ abstract class Command extends BaseEntity {
     const TYPE_RING      = 0x0001;
     const TYPE_LOCK      = 0x0002;
     const TYPE_LOCATE    = 0x0003;
-
+    const TYPE_GETLOG    = 0x0004;
 
     /**
      * @Column(type="datetime", nullable=true)

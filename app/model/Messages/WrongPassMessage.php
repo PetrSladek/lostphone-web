@@ -26,7 +26,7 @@ class WrongPassMessage extends Message {
      * @Column(type="string", nullable=true)
      * @var string
      */
-    private $frontPhoto;
+    protected $frontPhoto;
 
 
     /**
