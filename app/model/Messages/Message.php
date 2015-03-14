@@ -7,11 +7,13 @@
  */
 
 namespace App\Model\Messages;
+use App\Model\Device;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\DiscriminatorColumn;
 use Doctrine\ORM\Mapping\DiscriminatorMap;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\InheritanceType;
+use Doctrine\ORM\Mapping\ManyToOne;
 use Kdyby\Doctrine\Entities\BaseEntity;
 
 /**
@@ -44,8 +46,15 @@ abstract class Message extends BaseEntity {
      * @Column(type="datetime", nullable=true)
      * @var DateTime|null Data sent
      */
-    private $dateSent;
+    protected $dateSent;
 
+
+
+    /**
+     * @ManyToOne(targetEntity="App\Model\Device", inversedBy="messages")
+     * @var Device
+     */
+    protected $device;
 
 
     /**
@@ -76,6 +85,27 @@ abstract class Message extends BaseEntity {
     {
         $this->dateSent = $dateSent;
     }
+
+    /**
+     * @return Device
+     */
+    public function getDevice()
+    {
+        return $this->device;
+    }
+
+    /**
+     * @param Device $device
+     */
+    public function setDevice(Device $device)
+    {
+        $this->device = $device;
+    }
+
+
+
+
+
 
 
 }

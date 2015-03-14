@@ -8,12 +8,14 @@
 
 namespace App\Model\Commands;
 
+use App\Model\Device;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\InheritanceType;
 use Doctrine\ORM\Mapping\DiscriminatorColumn;
 use Doctrine\ORM\Mapping\DiscriminatorMap;
 use \DateTime;
+use Doctrine\ORM\Mapping\ManyToOne;
 use Kdyby\Doctrine\Entities\BaseEntity;
 
 /**
@@ -50,12 +52,21 @@ abstract class Command extends BaseEntity {
     protected $dateAck;
 
 
+    /**
+     * @ManyToOne(targetEntity="App\Model\Device", inversedBy="commands")
+     * @var Device
+     */
+    protected $device;
+
 
     /**
      * @return int
      */
     public abstract function getType();
 
+    public function isType($type) {
+        return $this->getType() === $type;
+    }
 
 
 
@@ -95,7 +106,7 @@ abstract class Command extends BaseEntity {
     /**
      * @return bool
      */
-    public function isAck() {
+    public function isAcked() {
         return $this->dateAck !== null;
     }
 
@@ -112,5 +123,21 @@ abstract class Command extends BaseEntity {
         );
     }
 
+
+    /**
+     * @return Device
+     */
+    public function getDevice()
+    {
+        return $this->device;
+    }
+
+    /**
+     * @param Device $device
+     */
+    public function setDevice(Device $device)
+    {
+        $this->device = $device;
+    }
 
 }

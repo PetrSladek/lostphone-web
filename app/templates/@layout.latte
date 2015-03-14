@@ -26,6 +26,7 @@
     {block scripts}
 	<script src="{$basePath}/js/jquery.js"></script>
 	<script src="{$basePath}/js/netteForms.js"></script>
+	<script src="{$basePath}/js/nette.ajax.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key={$config->google->apiKey}"></script>
 
@@ -41,14 +42,24 @@
       <div class="container">
 
         <div class="navbar-header">
-          <a class="navbar-brand" href="#">
+          <a class="navbar-brand" href="{link Homepage:}">
             LostPhone
           </a>
         </div>
 
+
+        {if $user->isLoggedIn()}
+        <form n:name="frmChangeDevice" class="navbar-form navbar-left">
+            <div class="form-group">
+                <select n:name="deviceId" class="form-control" />
+            </div>
+            <button n:name="send" class="btn btn-default">Změnit</button>
+        </form>
+        {/if}
+
         <p class="navbar-text navbar-right">
             {if $user->isLoggedIn()}
-            Prihlasen: {$user->identity->name} [{$user->identity->email}] <a n:href="Sign:out">odhlasit se</a>
+            Prihlasen: {$me->name} ({$me->googleEmail}) <a n:href="Sign:out">odhlásit se</a>
             {else}
             <a n:href="Sign:in">Prihlasit se</a>
             {/if}

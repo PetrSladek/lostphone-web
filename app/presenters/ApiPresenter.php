@@ -4,6 +4,7 @@ namespace App\Presenters;
 
 use App\Model\Commands\Command;
 use App\Model\Device;
+use App\Model\Messages\GotchaMessage;
 use App\Model\Messages\LocationMessage;
 use App\Model\Messages\Message;
 use App\Model\Messages\PongMessage;
@@ -35,14 +36,17 @@ class ApiPresenter extends BasePresenter
      */
     public $input;
 
-    protected function getPut() {
-//        $put = null;
-//        try {
-//            $put = Json::encode(file_get_contents("php://input"));
-//        } catch(JsonException $e) {}
-//
-//        return empty($put) ? array() : (array) $put;
+    /**
+     * @var int GCM ID zareizemi od ktereho prisel event
+     */
+    public $gcmId;
 
+    /**
+     * @var Device|null nalezene zarizeni podle GCM ID
+     */
+    public $device;
+
+    protected function getJsonBody() {
         return (array) json_decode(file_get_contents("php://input"));
     }
 
@@ -50,20 +54,22 @@ class ApiPresenter extends BasePresenter
     {
         parent::startup();
 
+        $gcmId = $this->getHttpRequest()->getHeader('device');
+        Debugger::log($gcmId);
+        // nacte Zarizeni z DB podle gcmId
+        $this->device = $this->em->getRepository(Device::getClassName())->findOneBy(['gcmId'=>$gcmId]);
+
         $data = array_merge(
-            $this->getPut(),
+            $this->getJsonBody(),
             $this->getHttpRequest()->getPost(),
             $this->getHttpRequest()->getFiles()
         );
 
         Debugger::log(print_r($data, true));
-
         $this->input = ArrayHash::from($data);
     }
 
     public function actionDefault() {
-
-//        dump(new DateTime("Wed Mar 04 12:26:57 CET 2015"));
 
         $this->sendResponse(new TextResponse("ERR"));
     }
@@ -75,6 +81,7 @@ class ApiPresenter extends BasePresenter
                 $msg = new PongMessage();
             break;
             case Message::TYPE_REGISTRATION:
+                // tady bude gcmId null
                 $msg = new RegistrationMessage();
                 $msg->setGcmId($this->input->gcmId);
                 $msg->setIdentifier($this->input->identifier);
@@ -82,22 +89,26 @@ class ApiPresenter extends BasePresenter
                 $msg->setBrand($this->input->brand);
                 $msg->setModel($this->input->model);
 
-                $device = new Device();
-                $device->setName( sprintf("%s %s", $msg->getBrand(), $msg->getModel()));
-                $device->setIdentifier($msg->getIdentifier());
-                $device->setRegistrationMessage($msg);
+//                $device = $this->em->getRepository(Device::getClassName())->findOneBy(['identifier'=>$msg->getIdentifier()]);
+//                if(!$device) {
+                $this->device = new Device();
+                $this->device->setName(sprintf("%s %s", $msg->getBrand(), $msg->getModel()));
+                $this->device->setIdentifier($msg->getIdentifier());
+//                }
+                $this->device->setGcmId($msg->getGcmId());
+                $this->device->setRegistrationMessage($msg);
 
                 // najdi ownera podle emailu
                 $owner = $this->em->getRepository(User::getClassName())->findOneBy(['googleEmail'=>$msg->getGoogleAccountEmail()]);
                 if($owner)
-                    $device->setOwner($owner);
+                    $this->device->setOwner($owner);
 
-                $this->em->persist($device);
+                $this->em->persist($this->device);
 
                 break;
 
             case Message::TYPE_GOTCHA:
-                $msg = new RingingTimeoutMessage();
+                $msg = new GotchaMessage();
                 break;
 
             case Message::TYPE_RINGINGTIMEOUT:
@@ -127,6 +138,7 @@ class ApiPresenter extends BasePresenter
         }
 
         $msg->setDateSent(new DateTime($this->input->date));
+        $this->device->addMessage($msg);
 
         $this->em->persist($msg);
         $this->em->flush();

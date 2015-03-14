@@ -32,25 +32,54 @@ class User extends BaseEntity {
      * @Column(type="string")
      * @var string
      */
-    private $name;
+    protected $name;
 
     /**
      * @Column(type="string")
      * @var string
      */
-    private $googleEmail;
+    protected $googleEmail;
 
     /**
      * @OneToMany(targetEntity="Device", mappedBy="owner")
      * @var Collection
      */
-    private $devices;
+    protected $devices;
 
 
     public function __construct()
     {
         $this->devices = new ArrayCollection();
     }
+
+
+    public function addDevice(Device $device) {
+        $this->devices->add($device);
+        $device->setOwner($this);
+    }
+    public function removeDevice(Device $device) {
+        $this->devices->remove($device);
+        $device->setOwner(null);
+    }
+
+    /**
+     * Vrati prvni (defoultni zarizeni)
+     * @return Device|null
+     */
+    public function getFirstDevice() {
+        return $this->devices->count() ? $this->devices->first() : null;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getDevices()
+    {
+        return $this->devices->toArray();
+    }
+
+
+
 
 
     /**

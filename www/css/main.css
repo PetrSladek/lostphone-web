@@ -20,3 +20,12 @@ a[href^="#error:"] {
 	color: white;
 }
 
+/* Standard syntax */
+@keyframes myfirst {
+    from {transform: scale(2);}
+    to {transform: scale(1);}
+}
+
+#snippet--messages div:first-child {
+    animation: 1s myfirst ease-in-out;
+}

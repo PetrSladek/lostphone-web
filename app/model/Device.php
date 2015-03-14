@@ -8,10 +8,14 @@
 
 namespace App\Model;
 
+use App\Model\Commands\Command;
+use App\Model\Messages\Message;
 use App\Model\Messages\RegistrationMessage;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\ManyToOne;
+use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\Mapping\OneToOne;
 use Kdyby\Doctrine\Entities\Attributes\Identifier;
 use Kdyby\Doctrine\Entities\BaseEntity;
@@ -31,27 +35,46 @@ class Device extends BaseEntity {
      * @Column(type="string")
      * @var string
      */
-    private $identifier;
+    protected $identifier;
 
     /**
      * @Column(type="string")
      * @var string
      */
-    private $name;
+    protected $gcmId;
+
+    /**
+     * @Column(type="string")
+     * @var string
+     */
+    protected $name;
 
 
     /**
-     * @ManyToOne(targetEntity="User", inversedBy="commentsAuthored")
+     * @ManyToOne(targetEntity="User", inversedBy="devices")
      * @var User
      */
-    private $owner;
+    protected $owner;
+
+    /**
+     * @OneToMany(targetEntity="App\Model\Commands\Command", mappedBy="device")
+     * @var Collection
+     */
+    protected $commands;
+
+
+    /**
+     * @OneToMany(targetEntity="App\Model\Messages\Message", mappedBy="device")
+     * @var Collection
+     */
+    protected $messages;
 
 
     /**
      * @OneToOne(targetEntity="App\Model\Messages\RegistrationMessage")
      * @var RegistrationMessage
      */
-    private $registrationMessage;
+    protected $registrationMessage;
 
     /**
      * @return string
@@ -101,7 +124,28 @@ class Device extends BaseEntity {
     public function setOwner(User $owner)
     {
         $this->owner = $owner;
+        $owner->addDevice($this);
     }
+
+    /**
+     * @return string
+     */
+    public function getGcmId()
+    {
+        return $this->gcmId;
+    }
+
+    /**
+     * @param string $gcmId
+     */
+    public function setGcmId($gcmId)
+    {
+        $this->gcmId = $gcmId;
+    }
+
+
+
+
 
     /**
      * @return RegistrationMessage
@@ -118,6 +162,53 @@ class Device extends BaseEntity {
     {
         $this->registrationMessage = $registrationMessage;
     }
+
+    /**
+     * @param Message $command
+     * @return $this
+     */
+    public function addCommand(Command $command)
+    {
+        $this->commands->add($command);
+        $command->setDevice($this);
+        return $this;
+    }
+
+    /**
+     * @param Message $messages
+     * @return $this
+     */
+    public function removeCommand(Command $command)
+    {
+        $this->commands->removeElement($command);
+        $command->setDevice(null);
+        return $this;
+    }
+
+    /**
+     * @param Message $message
+     * @return $this
+     */
+    public function addMessage(Message $message)
+    {
+        $this->messages->add($message);
+        $message->setDevice($this);
+        return $this;
+    }
+
+    /**
+     * @param Message $messages
+     * @return $this
+     */
+    public function removeMessage(Message $message)
+    {
+        $this->messages->removeElement($message);
+        $message->setDevice(null);
+        return $this;
+    }
+
+
+
 
 
 
