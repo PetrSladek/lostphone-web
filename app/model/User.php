@@ -55,11 +55,9 @@ class User extends BaseEntity {
 
     public function addDevice(Device $device) {
         $this->devices->add($device);
-        $device->setOwner($this);
     }
     public function removeDevice(Device $device) {
         $this->devices->remove($device);
-        $device->setOwner(null);
     }
 
     /**

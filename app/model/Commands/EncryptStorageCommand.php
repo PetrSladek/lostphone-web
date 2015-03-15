@@ -9,23 +9,21 @@
 namespace App\Model\Commands;
 
 use App\Model\Commands\Command;
-use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 
 /**
- * Class GetLogCommand
+ * Class EncryptStorageCommand
  * @package App\Model
  * @Entity
  */
-class GetLogCommand extends Command {
-
+class EncryptStorageCommand extends Command {
 
     /**
      * @return int
      */
     public function getType()
     {
-        return Command::TYPE_GETLOG;
+        return Command::TYPE_ENCRYPTSTORAGE;
     }
 
 

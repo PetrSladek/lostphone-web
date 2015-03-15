@@ -11,6 +11,7 @@ namespace App\Model;
 use App\Model\Commands\Command;
 use App\Model\Messages\Message;
 use App\Model\Messages\RegistrationMessage;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
@@ -57,6 +58,12 @@ class Device extends BaseEntity {
     protected $owner;
 
     /**
+     * @OneToOne(targetEntity="App\Model\Messages\RegistrationMessage")
+     * @var RegistrationMessage
+     */
+    protected $registrationMessage;
+
+    /**
      * @OneToMany(targetEntity="App\Model\Commands\Command", mappedBy="device")
      * @var Collection
      */
@@ -70,11 +77,12 @@ class Device extends BaseEntity {
     protected $messages;
 
 
-    /**
-     * @OneToOne(targetEntity="App\Model\Messages\RegistrationMessage")
-     * @var RegistrationMessage
-     */
-    protected $registrationMessage;
+    public function __construct()
+    {
+        $this->messages = new ArrayCollection();
+        $this->commands = new ArrayCollection();
+    }
+
 
     /**
      * @return string
@@ -124,7 +132,6 @@ class Device extends BaseEntity {
     public function setOwner(User $owner)
     {
         $this->owner = $owner;
-        $owner->addDevice($this);
     }
 
     /**

@@ -91,19 +91,21 @@ class ApiPresenter extends BasePresenter
                 $msg->setBrand($this->input->brand);
                 $msg->setModel($this->input->model);
 
-//                $device = $this->em->getRepository(Device::getClassName())->findOneBy(['identifier'=>$msg->getIdentifier()]);
-//                if(!$device) {
-                $this->device = new Device();
-                $this->device->setName(sprintf("%s %s", $msg->getBrand(), $msg->getModel()));
-                $this->device->setIdentifier($msg->getIdentifier());
-//                }
+                $device = $this->em->getRepository(Device::getClassName())->findOneBy(['identifier'=>$msg->getIdentifier()]);
+                if(!$device) {
+                    $this->device = new Device();
+                    $this->device->setName(sprintf("%s %s", $msg->getBrand(), $msg->getModel()));
+                    $this->device->setIdentifier($msg->getIdentifier());
+                }
                 $this->device->setGcmId($msg->getGcmId());
                 $this->device->setRegistrationMessage($msg);
+
 
                 // najdi ownera podle emailu
                 $owner = $this->em->getRepository(User::getClassName())->findOneBy(['googleEmail'=>$msg->getGoogleAccountEmail()]);
                 if($owner)
                     $this->device->setOwner($owner);
+
 
                 $this->em->persist($this->device);
 

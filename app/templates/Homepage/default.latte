@@ -17,11 +17,13 @@
             Příkazy
         </div>
         <div class="panel-body">
+            <a n:href="ping!" class="ajax btn btn-default btn-block">Ping</a>
             <a n:href="ring!" class="ajax btn btn-default btn-block">Prozvonit</a>
             <a n:href="lock!" class="ajax btn btn-default btn-block">Uzamknout</a>
             <a n:href="locate!" class="ajax btn btn-default btn-block">Lokalizovat</a>
             <a n:href="getLog!" class="ajax btn btn-default btn-block">Výpis volání/SMS</a>
-            <a n:href="ping!" class="ajax btn btn-default btn-block">Ping</a>
+            <a n:href="encryptStorage!" class="ajax btn btn-default btn-block">Zašifrovat data</a>
+            <a n:href="wipeData!" class="ajax btn btn-default btn-block">Tovární nastavení</a>
         </div>
     </div>
     <div class="panel panel-default">
@@ -45,6 +47,12 @@
             {elseif $command->isType($command::TYPE_GETLOG)}
                 <small>{$command->dateSent->format('j.n.Y H:i:s')}</small><br />
                 Výpis volání/SMS
+            {elseif $command->isType($command::TYPE_ENCRYPTSTORAGE)}
+                <small>{$command->dateSent->format('j.n.Y H:i:s')}</small><br />
+                Zašifrovat data
+            {elseif $command->isType($command::TYPE_WIPEDATA)}
+                <small>{$command->dateSent->format('j.n.Y H:i:s')}</small><br />
+                Tovární nastavení
             {/if}
             </div>
         </div>

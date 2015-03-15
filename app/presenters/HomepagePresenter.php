@@ -3,11 +3,13 @@
 namespace App\Presenters;
 
 use App\Model\Commands\Command;
+use App\Model\Commands\EncryptStorageCommand;
 use App\Model\Commands\GetLogCommand;
 use App\Model\Commands\LocateCommand;
 use App\Model\Commands\LockCommand;
 use App\Model\Commands\PingCommand;
 use App\Model\Commands\RingCommand;
+use App\Model\Commands\WipeDataCommand;
 use App\Model\Device;
 use App\Model\Messages\LocationMessage;
 use App\Model\Messages\Message;
@@ -195,6 +197,22 @@ class HomepagePresenter extends BasePresenter
     public function handleGetLog()
     {
         $cmd = new GetLogCommand();
+        $this->sendCommand($cmd);
+
+        $this->isAjax() ? $this->redrawControl() : $this->redirect('this');
+    }
+
+    public function handleEncryptStorage()
+    {
+        $cmd = new EncryptStorageCommand();
+        $this->sendCommand($cmd);
+
+        $this->isAjax() ? $this->redrawControl() : $this->redirect('this');
+    }
+
+    public function handleWipeData()
+    {
+        $cmd = new WipeDataCommand();
         $this->sendCommand($cmd);
 
         $this->isAjax() ? $this->redrawControl() : $this->redirect('this');
