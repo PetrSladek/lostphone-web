@@ -4,6 +4,7 @@ namespace App\Presenters;
 
 use App\Model\Commands\Command;
 use App\Model\Device;
+use App\Model\Image;
 use App\Model\Messages\GotchaMessage;
 use App\Model\Messages\LocationMessage;
 use App\Model\Messages\LogMessage;
@@ -15,8 +16,10 @@ use App\Model\Messages\SimStateChangedMessage;
 use App\Model\Messages\UnlockMessage;
 use App\Model\Messages\WrongPassMessage;
 use App\Model\User;
+use App\Services\ImageService;
 use Kdyby\Doctrine\EntityManager;
 use Nette\Application\Responses\TextResponse;
+use Nette\Http\FileUpload;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\DateTime;
 use Nette\Utils\Json;
@@ -33,6 +36,7 @@ class ApiPresenter extends BasePresenter
     /** @var EntityManager @inject */
     public $em;
 
+
     /**
      * @var ArrayHash
      */
@@ -47,6 +51,11 @@ class ApiPresenter extends BasePresenter
      * @var Device|null nalezene zarizeni podle GCM ID
      */
     public $device;
+
+
+
+
+
 
     protected function getJsonBody() {
         return (array) json_decode(file_get_contents("php://input"));
@@ -125,8 +134,18 @@ class ApiPresenter extends BasePresenter
 
             case Message::TYPE_WRONGPASS:
                 $msg = new WrongPassMessage();
-                // TODO save Photo
-                $msg->setFrontPhoto(null);
+                /** @var FileUpload $photo */
+                $photo = $this->input->frontPhoto;
+
+                $file = $this->imageService->uploadImage($photo);
+
+                $image = new Image();
+                $image->setFilename( $file->getBasename() );
+                $image->setExtension( $file->getExtension() );
+
+                $this->em->persist($image);
+
+                $msg->setFrontPhoto($image);
             break;
 
             case Message::TYPE_LOCATION:

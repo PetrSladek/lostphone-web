@@ -12,6 +12,7 @@ namespace App\Model\Messages;
 use App\Model\Commands\Command;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
+use Doctrine\ORM\Mapping\OneToOne;
 
 /**
  * Class WrongPassMessage
@@ -22,9 +23,10 @@ class WrongPassMessage extends Message {
 
 
     /**
-     * Cesta k fotce
-     * @Column(type="string", nullable=true)
-     * @var string
+     * Fotka
+     *
+     * @OneToOne(targetEntity="App\Model\Image")
+     * @var Image
      */
     protected $frontPhoto;
 
@@ -38,21 +40,7 @@ class WrongPassMessage extends Message {
     }
 
 
-    /**
-     * @return string
-     */
-    public function getFrontPhoto()
-    {
-        return $this->frontPhoto;
-    }
 
-    /**
-     * @param string $frontPhoto
-     */
-    public function setFrontPhoto($frontPhoto)
-    {
-        $this->frontPhoto = $frontPhoto;
-    }
 
 
 

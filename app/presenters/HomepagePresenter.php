@@ -48,8 +48,6 @@ class HomepagePresenter extends BasePresenter
      */
     protected $devices;
 
-//    const DEVICE_REG_ID = "APA91bFWWWqeE5FLGjO2oegrTfegBA7Cl7FTdWferlDvdirXDrkDDWXcZNDV4e8SGVw5U-yZ4B9WYJTKwc5fjmZr3W5ENjXtDyT093AG8Qfjyu655jkgO3IJp9kNDfA3kOBK2IZVGy0srCDqwhlWy19-FBd4gA39KRweIlxmdHx6UAgjRFPCVYk";
-
     protected function startup()
     {
         parent::startup();

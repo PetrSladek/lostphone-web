@@ -2,7 +2,9 @@
 
 namespace App\Presenters;
 
+use App\Model\Image;
 use App\Model\User;
+use App\Services\ImageService;
 use Kdyby\Doctrine\EntityManager;
 use Nette\Application\UI\Presenter;
 use Nette\Utils\ArrayHash;
@@ -22,6 +24,10 @@ abstract class BasePresenter extends Presenter
     /** @var EntityManager @inject */
     public $em;
 
+    /** @var ImageService @inject */
+    public $imageService;
+
+    /** @var ArrayHash */
     public $config;
 
     protected function startup()
@@ -35,8 +41,27 @@ abstract class BasePresenter extends Presenter
         $this->me = $this->user->isLoggedIn() ? $this->em->getRepository(User::getClassName())->find( $this->user->getId() ) : null;
         $this->template->me = $this->me;
 
-
     }
+
+    protected function createTemplate()
+    {
+        $template =  parent::createTemplate();
+        $template->registerHelper('thumb', $this->thumbLink);
+
+        return $template;
+    }
+
+
+    public function thumbLink(Image $entity, $type = 'thumb') {
+        try {
+            return $this->imageService->getThumbnailUrl($entity->getId(), $entity->getFilename(), $type);
+        } catch (\Exception $e) {
+            return "#{$e->getMessage()}";
+        }
+    }
+
+
+
 
 
 }

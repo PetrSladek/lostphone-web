@@ -80,6 +80,7 @@
         {elseif $message->isType($message::TYPE_WRONGPASS)}
             <small>{$message->dateSent->format('j.n.Y H:i:s')}</small><br />
             Pokus o odemčení!
+            <div><img n:if="$message->frontPhoto" src="{$message->frontPhoto|thumb}" alt="foto z predni kamery" /></div>
         {elseif $message->isType($message::TYPE_LOCATION)}
             <small>{$message->dateSent->format('j.n.Y H:i:s')}</small><br />
             Lokalizováno na <strong>{$message->lat}</strong>, <strong>{$message->lng}</strong>

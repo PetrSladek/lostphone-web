@@ -13,6 +13,25 @@ parameters:
             lng: 16.5779606
             zoom: 13
 
+    images:
+        cacheDir: %wwwDir%/cache/
+        uploadDir: %wwwDir%/../upload/
+        cacheUrl: /cache/
+
+        sizes:
+            detail:
+                width: 220
+                height: 220
+                flag: centered
+            thumb:
+                width: 172
+                height: 172
+                flag: centered
+            mini:
+                width: 60
+                height: 60
+                flag: centered
+
 php:
 	date.timezone: Europe/Prague
 
@@ -46,6 +65,7 @@ nette:
 
 
 services:
-	- App\RouterFactory
+	- App\Services\ImageService(%images.uploadDir%,%images.cacheDir%,%images.sizes%,%images.cacheUrl%)
 	- CodeMonkeysRu\GCM\Sender(%google.apiKey%)
+	- App\RouterFactory
 	router: @App\RouterFactory::createRouter

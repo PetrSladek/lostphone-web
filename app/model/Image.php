@@ -24,12 +24,46 @@ class Image extends BaseEntity {
     /**
      * @Column(type="string")
      */
-    protected  $filename;
+    protected $filename;
 
     /**
      * @Column(type="string")
      */
     protected $extension;
+
+    /**
+     * @return mixed
+     */
+    public function getFilename()
+    {
+        return $this->filename;
+    }
+
+    /**
+     * @param mixed $filename
+     */
+    public function setFilename($filename)
+    {
+        $this->filename = $filename;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getExtension()
+    {
+        return $this->extension;
+    }
+
+    /**
+     * @param mixed $extension
+     */
+    public function setExtension($extension)
+    {
+        $this->extension = $extension;
+    }
+
+
 
 
 
