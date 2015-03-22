@@ -3,7 +3,7 @@
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$" isTestSource="false" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/codemonkeys-ru/gcm-message" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/abhinavsingh/jaxl" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/composer" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/dg/adminer-custom" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/doctrine/annotations" />
@@ -76,7 +76,6 @@
           <root url="file://$MODULE_DIR$/vendor/kdyby/doctrine-cache" />
           <root url="file://$MODULE_DIR$/vendor/nette/tester" />
           <root url="file://$MODULE_DIR$/vendor/kdyby/doctrine" />
-          <root url="file://$MODULE_DIR$/vendor/codemonkeys-ru/gcm-message" />
           <root url="file://$MODULE_DIR$/vendor/doctrine/common" />
           <root url="file://$MODULE_DIR$/vendor/doctrine/cache" />
           <root url="file://$MODULE_DIR$/vendor/nette/database" />
@@ -85,6 +84,7 @@
           <root url="file://$MODULE_DIR$/vendor/nette/robot-loader" />
           <root url="file://$MODULE_DIR$/vendor/kdyby/events" />
           <root url="file://$MODULE_DIR$/vendor/nette/reflection" />
+          <root url="file://$MODULE_DIR$/vendor/abhinavsingh/jaxl" />
           <root url="file://$MODULE_DIR$/vendor/nette/forms" />
           <root url="file://$MODULE_DIR$/vendor/composer" />
           <root url="file://$MODULE_DIR$/vendor/kdyby/annotations" />
@@ -120,7 +120,6 @@
           <root url="file://$MODULE_DIR$/vendor/kdyby/doctrine-cache" />
           <root url="file://$MODULE_DIR$/vendor/nette/tester" />
           <root url="file://$MODULE_DIR$/vendor/kdyby/doctrine" />
-          <root url="file://$MODULE_DIR$/vendor/codemonkeys-ru/gcm-message" />
           <root url="file://$MODULE_DIR$/vendor/doctrine/common" />
           <root url="file://$MODULE_DIR$/vendor/doctrine/cache" />
           <root url="file://$MODULE_DIR$/vendor/nette/database" />
@@ -129,6 +128,7 @@
           <root url="file://$MODULE_DIR$/vendor/nette/robot-loader" />
           <root url="file://$MODULE_DIR$/vendor/kdyby/events" />
           <root url="file://$MODULE_DIR$/vendor/nette/reflection" />
+          <root url="file://$MODULE_DIR$/vendor/abhinavsingh/jaxl" />
           <root url="file://$MODULE_DIR$/vendor/nette/forms" />
           <root url="file://$MODULE_DIR$/vendor/composer" />
           <root url="file://$MODULE_DIR$/vendor/kdyby/annotations" />

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PhpProjectSharedConfiguration" php_language_level="5.5.0" />
+  <component name="PhpStepFilterConfiguration">
+    <option name="skippedFunctions">
+      <list>
+        <option value="Gcm\Xmpp\Deamon-&gt;Gcm\Xmpp\{closure}" />
+        <option value="App\Commands\DeamonCommand-&gt;App\Commands\{closure}" />
+      </list>
+    </option>
+  </component>
+</project>

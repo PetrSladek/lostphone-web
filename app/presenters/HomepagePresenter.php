@@ -13,7 +13,7 @@ use App\Model\Commands\WipeDataCommand;
 use App\Model\Device;
 use App\Model\Messages\LocationMessage;
 use App\Model\Messages\Message;
-use CodeMonkeysRu\GCM;
+use Gcm\Http\Sender;
 use Kdyby\Doctrine\EntityManager;
 use Kdyby\Doctrine\EntityRepository;
 use Nette\Application\UI\Form;
@@ -31,7 +31,7 @@ class HomepagePresenter extends BasePresenter
     /** @var EntityManager @inject */
     public $em;
 
-    /** @var GCM\Sender @inject */
+    /** @var Sender @inject */
     public $gcm;
 
 
@@ -231,7 +231,7 @@ class HomepagePresenter extends BasePresenter
         $this->em->persist($cmd);
         $this->em->flush();
 
-        $message = new GCM\Message([$this->device->getGcmId()], $cmd->toGCMdata(), "collapse-".$cmd->getType());
+        $message = new \Gcm\Message($this->device->getGcmId(), $cmd->toGCMdata(), "collapse-".$cmd->getType());
         return $this->gcm->send($message);
     }
 
