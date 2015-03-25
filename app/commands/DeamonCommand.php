@@ -9,15 +9,16 @@
 namespace App\Commands;
 
 use App\Model\Device;
+use App\Model\Commands\Command;
+
 use App\Services\MessageService;
 use Gcm\RecievedMessage;
 use Gcm\Xmpp\Deamon;
 use Kdyby\Doctrine\EntityManager;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class DeamonCommand extends Command {
+class DeamonCommand extends \Symfony\Component\Console\Command\Command {
 
     /**
      * @var EntityManager
@@ -68,10 +69,32 @@ class DeamonCommand extends Command {
         };
         $this->gcm->onMessage[] = function(Deamon $gcm, RecievedMessage $message) use($output) {
 
-            $output->writeln( print_r($message, true));
+//            $output->writeln( print_r($message, true));
+
+
             $device = $this->em->getRepository(Device::getClassName())->findOneBy(['gcmId' => $message->getFrom()]);
 
-            $data = json_decode($message->getData()->message);
+            $data = $message->getData();
+
+            // ACK
+            if(@$data->ack && @$data->id) {
+                $acked = new \DateTime($data->ack);
+                $id =  $data->id;
+
+                /** @var Command $cmd */
+                $cmd = $this->em->find( Command::getClassName(), $id);
+                if($cmd->getDevice() == $device) {
+                    $cmd->setDateAck( $acked );
+                    $this->em->flush();
+                    $output->writeln("Command {$id} ACKed at ".$acked->format('j.n.Y H:i:s'));
+                } else {
+                    $output->writeln("Command sended to {$cmd->getDevice()->getGcmId()}, but acked from {$device->getGcmId()}");
+                }
+                return;
+            }
+
+            // Message
+            $data = json_decode($data->message);
 
             $this->messageService->proccessRecievedData($device, $data);
             $this->em->flush();
