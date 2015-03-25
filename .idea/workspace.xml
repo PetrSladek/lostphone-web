@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b8aa874e-e71e-4426-bb6c-ab2602b76725" name="Default" comment="added Deamon to git">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/classes/Gcm/Deamon.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="lostphone.iws" />
@@ -49,8 +48,8 @@
       <file leaf-file-name="Deamon.php" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/classes/Gcm/Deamon.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2771">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.23421355" vertical-offset="0" max-vertical-offset="2771">
+              <caret line="19" column="38" selection-start-line="19" selection-start-column="38" selection-end-line="19" selection-end-column="38" />
               <folding />
             </state>
           </provider>
@@ -534,6 +533,7 @@
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="E:\Dev\www\lostphone\app\classes\Gcm" />
+      <recent name="E:\Dev\www\lostphone\app\classes\Gcm\Xmpp" />
       <recent name="E:\Dev\www\lostphone\app\model" />
       <recent name="E:\Dev\www\lostphone\app\model\Commands" />
       <recent name="E:\Dev\www\lostphone\app\HttpGCM" />
@@ -665,14 +665,20 @@
       <option name="project" value="LOCAL" />
       <updated>1427277746964</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="added Deamon to git">
+      <created>1427277912835</created>
+      <option name="number" value="00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1427277912835</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32864866" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32864866" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32890365" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32721382" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32779622" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -1144,8 +1150,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/classes/Gcm/Deamon.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2771">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.23421355" vertical-offset="0" max-vertical-offset="2771">
+          <caret line="19" column="38" selection-start-line="19" selection-start-column="38" selection-end-line="19" selection-end-column="38" />
           <folding />
         </state>
       </provider>
