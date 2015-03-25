@@ -46,6 +46,11 @@ class MessageService
     }
 
 
+    /**
+     * @param $device
+     * @param $data
+     * @return GotchaMessage|LocationMessage|PongMessage|RegistrationMessage|RingingTimeoutMessage|UnlockMessage|WrongPassMessage
+     */
     public function proccessRecievedData($device, $data)
     {
         switch ($data->type) {
@@ -152,6 +157,8 @@ class MessageService
         $device->addMessage($msg);
 
         $this->em->persist($msg);
+
+        return $msg;
     }
 
 }

@@ -96,7 +96,10 @@ class DeamonCommand extends \Symfony\Component\Console\Command\Command {
             // Message
             $data = json_decode($data->message);
 
-            $this->messageService->proccessRecievedData($device, $data);
+            $msg = $this->messageService->proccessRecievedData($device, $data);
+
+            $output->writeln("Reciever message {$msg->getClassName()} from {$device->getGcmId()}");
+
             $this->em->flush();
         };
 
