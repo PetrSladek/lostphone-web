@@ -19,7 +19,7 @@
         <div class="panel-body">
             <a n:href="ping!" class="ajax btn btn-default btn-block">Ping</a>
             <a n:href="ring!" class="ajax btn btn-default btn-block">Prozvonit</a>
-            <a n:href="lock!" class="ajax btn btn-default btn-block">Uzamknout</a>
+            <a data-toggle="modal" href="#modal-command-lock" class="ajax btn btn-default btn-block">Uzamknout</a>
             <a n:href="locate!" class="ajax btn btn-default btn-block">Lokalizovat</a>
             <a n:href="getLog!" class="ajax btn btn-default btn-block">Výpis volání/SMS</a>
             <a n:href="encryptStorage!" class="ajax btn btn-default btn-block">Zašifrovat data</a>
@@ -59,58 +59,210 @@
     </div>
 </div>
 
+<div class="modal fade" id="modal-command-lock" tabindex="-1" role="dialog" aria-labelledby="modal-command-lock-label" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="modal-command-lock-label">Uzamknout telefon</h4>
+      </div>
+      <div class="modal-body">
+
+            {control frmLock}
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Zavřít</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <div class="panel panel-default" style="position: absolute; z-index: 100; top: 100px; right: 100px;">
     <div class="panel-heading">
         Zprávy z telefonu
     </div>
     <div class="panel-body" n:snippet="messages">
-        <div n:foreach="$messages as $message">
+        <div n:foreach="$messages as $message" class="message clearfix">
         {if $message->isType($message::TYPE_PONG)}
-            <small>{$message->dateSent->format('j.n.Y H:i:s')}</small><br />
-            Pong!
+            <div class="message-icon pong">
+                <i class="fa fa-asterisk"></i>
+            </div>
+            <div class="message-title">
+                <small>{$message->dateSent->format('j.n.Y H:i:s')}</small><br />
+                Pong!
+            </div>
         {elseif $message->isType($message::TYPE_GOTCHA)}
-            <small>{$message->dateSent->format('j.n.Y H:i:s')}</small><br />
-            Mám tě!
+            <div class="message-icon gotcha">
+                <i class="fa fa-hand-o-left"></i>
+            </div>
+            <div class="message-title">
+                <small>{$message->dateSent->format('j.n.Y H:i:s')}</small><br />
+                Mám tě!
+            </div>
         {elseif $message->isType($message::TYPE_RINGINGTIMEOUT)}
-            <small>{$message->dateSent->format('j.n.Y H:i:s')}</small><br />
-            Prozvonení přestalo..
+            <div class="message-icon ringingtimeout">
+                <i class="fa fa-bell-slash"></i>
+            </div>
+            <div class="message-title">
+                <small>{$message->dateSent->format('j.n.Y H:i:s')}</small><br />
+                Prozvonení přestalo.
+           </div>
         {elseif $message->isType($message::TYPE_UNLOCK)}
-            <small>{$message->dateSent->format('j.n.Y H:i:s')}</small><br />
-            Odemknuto!
+            <div class="message-icon unlock">
+                <i class="fa fa-unlock"></i>
+            </div>
+            <div class="message-title">
+                <small>{$message->dateSent->format('j.n.Y H:i:s')}</small><br />
+                Odemknuto!
+            </div>
         {elseif $message->isType($message::TYPE_WRONGPASS)}
-            <small>{$message->dateSent->format('j.n.Y H:i:s')}</small><br />
-            Pokus o odemčení!
-            <div><img n:if="$message->frontPhoto" src="{$message->frontPhoto|thumb}" alt="foto z predni kamery" /></div>
+            {if $message->frontPhoto}
+            <img class="message-icon" src="{$message->frontPhoto|thumb:mini}" alt="foto z predni kamery" />
+            {else}
+            <div class="message-icon wrongpass">
+                <i class="fa fa-lock"></i>
+            </div>
+            {/if}
+            <div class="message-title">
+                <small>{$message->dateSent->format('j.n.Y H:i:s')}</small><br />
+                Pokus o odemčení!
+                <button n:if="$message->frontPhoto" type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-message-{$message->id}">Otevrit</button>
+            </div>
         {elseif $message->isType($message::TYPE_LOCATION)}
-            <small>{$message->dateSent->format('j.n.Y H:i:s')}</small><br />
-            Lokalizováno na <strong>{$message->lat}</strong>, <strong>{$message->lng}</strong>
+            <div class="message-icon location">
+                <i class="fa fa-map-marker"></i>
+            </div>
+            <div class="message-title">
+                <small>{$message->dateSent->format('j.n.Y H:i:s')}</small><br />
+                Lokalizováno{* na <strong>{$message->lat}</strong>, <strong>{$message->lng}</strong>*}
+                <button type="button" class="btn btn-primary">Ukazat na mape</button>
+            </div>
         {elseif $message->isType($message::TYPE_SIMSTATECHANGED)}
-            <small>{$message->dateSent->format('j.n.Y H:i:s')}</small><br />
-            Stav SIM karty <br />
-<pre>
-Tel. číslo: {$message->phoneNumber}
-IMEI: {$message->imei}
-SubscriberID: {$message->subscriberId}
-Síť SIM karty:
-    {$message->simOperator}
-    {$message->simOperatorName}
-    {$message->simCountryIso}
-    S/N: {$message->simSerialNumber}
-Přihlášená síť:
-    {$message->networkOperator}
-    {$message->networkOperatorName}
-    {$message->networkCountryIso}
-</pre>
+            <div class="message-icon simstatechanged">
+                <i class="fa fa-credit-card"></i>
+            </div>
+            <div class="message-title">
+                <small>{$message->dateSent->format('j.n.Y H:i:s')}</small><br />
+                Stav SIM karty
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-message-{$message->id}">Otevrit</button>
+            </div>
+
         {elseif $message->isType($message::TYPE_LOG)}
-            <small>{$message->dateSent->format('j.n.Y H:i:s')}</small><br />
-            Výpis volání
-            {if $message->smsLog}{dump $message->smsLog}{/if}
-            {if $message->callLog}{dump $message->callLog}{/if}
+            <div class="message-icon log">
+                <i class="fa fa-phone"></i>
+            </div>
+            <div class="message-title">
+                <small>{$message->dateSent->format('j.n.Y H:i:s')}</small><br />
+                Výpis volání a SMS
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-message-{$message->id}">Otevrit</button>
+            </div>
         {/if}
         </div>
     </div>
 </div>
 
+{* Modals *}
+{snippet modals}
+    {foreach $messages as $message}
+        {if $message->isType($message::TYPE_WRONGPASS) && $message->frontPhoto}
+            <!-- Modal -->
+            <div class="modal fade" id="modal-message-{$message->id}" tabindex="-1" role="dialog" aria-labelledby="modal-message-{$message->id}-label" aria-hidden="true">
+              <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="modal-message-{$message->id}-label">Informace o SIM kartě</h4>
+                  </div>
+                  <div class="modal-body">
+
+                    <img src="{$message->frontPhoto|thumb:detail}" alt="foto z predni kamery" />
+
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Zavřít</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+        {elseif $message->isType($message::TYPE_SIMSTATECHANGED)}
+        <!-- Modal -->
+        <div class="modal fade" id="modal-message-{$message->id}" tabindex="-1" role="dialog" aria-labelledby="modal-message-{$message->id}-label" aria-hidden="true">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="modal-message-{$message->id}-label">Informace o SIM kartě</h4>
+              </div>
+              <div class="modal-body">
+
+                    <pre>
+                    Tel. číslo: {$message->phoneNumber}
+                    IMEI: {$message->imei}
+                    SubscriberID: {$message->subscriberId}
+                    Síť SIM karty:
+                        {$message->simOperator}
+                        {$message->simOperatorName}
+                        {$message->simCountryIso}
+                        S/N: {$message->simSerialNumber}
+                    Přihlášená síť:
+                        {$message->networkOperator}
+                        {$message->networkOperatorName}
+                        {$message->networkCountryIso}
+                    </pre>
+
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Zavřít</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        {elseif $message->isType($message::TYPE_LOG)}
+        <!-- Modal -->
+        <div class="modal fade" id="modal-message-{$message->id}" tabindex="-1" role="dialog" aria-labelledby="modal-message-{$message->id}-label" aria-hidden="true">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="modal-message-{$message->id}-label">Vypis SMS/Volani</h4>
+              </div>
+              <div class="modal-body">
+
+                    <table n:if="$message->smsLog" class="table table-striped table-bordered">
+                        <thead><tr><th colspan="99">Posledni SMS</th></tr></thead>
+                        <tbody n:inner-foreach="$message->smsLog as $log">
+                            <tr>
+                                <td>{$log['number']}</td>
+                                <td>{$log['box']}</td>
+                                <td>{$log['date']}</td>
+                                <td>{$log['body']}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table n:if="$message->callLog" class="table table-striped table-bordered">
+                        <thead><tr><th colspan="99">Posledni Volani</th></tr></thead>
+                        <tbody n:inner-foreach="$message->callLog as $log">
+                            <tr>
+                                <td>{$log['number']}</td>
+                                <td>{$log['direction']}</td>
+                                <td>{$log['date']}</td>
+                                <td>{$log['duration']}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Zavřít</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        {/if}
+    {/foreach}
+{/snippet}
 
 
 

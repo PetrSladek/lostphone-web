@@ -34,8 +34,16 @@ use Tracy\Debugger;
 class ApiPresenter extends BasePresenter
 {
 
-    /** @var EntityManager @inject */
+    /** @var EntityManager
+     * @inject
+     */
     public $em;
+
+    /**
+     * @var MessageService
+     * @inject
+     */
+    public $messageService;
 
 
     /**
@@ -52,13 +60,6 @@ class ApiPresenter extends BasePresenter
      * @var Device|null nalezene zarizeni podle GCM ID
      */
     public $device;
-
-
-    /**
-     * @var MessageService
-     */
-    public $messageService;
-
 
 
 

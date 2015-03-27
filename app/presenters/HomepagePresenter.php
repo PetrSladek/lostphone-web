@@ -17,6 +17,7 @@ use Gcm\Http\Sender;
 use Kdyby\Doctrine\EntityManager;
 use Kdyby\Doctrine\EntityRepository;
 use Nette\Application\UI\Form;
+use Nette\Http\IResponse;
 use Nette\InvalidStateException;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\DateTime;
@@ -60,8 +61,11 @@ class HomepagePresenter extends BasePresenter
         $this->devices = $this->em->getRepository(Device::getClassName());
 
 
-        if($this->deviceId)
+        if($this->deviceId) {
             $this->device = $this->devices->find($this->deviceId);
+            if($this->device->getOwner() !== $this->me)
+                $this->error("Toto zarizeni neni vase", IResponse::S403_FORBIDDEN);
+        }
 
         if(!$this->device)
             $this->device = $this->me->getFirstDevice();
@@ -146,6 +150,46 @@ class HomepagePresenter extends BasePresenter
         }
     }
 
+
+    /**
+     * @return Form
+     */
+    protected function createComponentFrmLock()
+    {
+    	$form = new Form();
+
+        $form->addText("displayText", 'Text na display');
+        $form->addText("ownerPhoneNumber", 'Číslo pro zavolání zpět');
+        $form->addText('pin', 'PIN  pro odekmnutí')
+             ->setRequired('Musíte zadat PIN')
+             ->setAttribute('type','numeric');
+
+        $form->addSubmit("send", "Odeslat");
+    	$form->onSuccess[] = $this->frmLockSucceeded;
+
+        $this->prepareRenderer($form);
+    	return $form;
+    }
+
+
+
+    /**
+     * @param Form $form
+     */
+    public function frmLockSucceeded(Form $form)
+    {
+        $values = $form->values;
+        $cmd = new LockCommand();
+
+        $cmd->setDisplayText($values->displayText);
+        $cmd->setOwnerPhoneNumber($values->ownerPhoneNumber);
+        $cmd->setPassword($values->pin);
+
+        $this->sendCommand($cmd);
+
+        $this->isAjax() ? $this->redrawControl() : $this->redirect('this');
+
+    }
 
 
     public function handleRefresh() {

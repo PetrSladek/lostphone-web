@@ -29,3 +29,19 @@ a[href^="#error:"] {
 #snippet--messages div:first-child {
     animation: 1s myfirst ease-in-out;
 }
+
+.messages {
+
+}
+.message {
+
+}
+.message-icon {
+    width: 48px;
+    height: 48px;
+    float: left;
+    text-align: center;
+    line-height: 48px;
+    font-size: 48px;
+    margin-right: 15px;
+}

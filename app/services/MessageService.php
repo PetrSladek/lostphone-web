@@ -9,6 +9,7 @@
 
 namespace App\Services;
 
+use App\Model\Device;
 use App\Model\Image;
 use App\Model\Messages\GotchaMessage;
 use App\Model\Messages\LocationMessage;
@@ -20,7 +21,9 @@ use App\Model\Messages\RingingTimeoutMessage;
 use App\Model\Messages\SimStateChangedMessage;
 use App\Model\Messages\UnlockMessage;
 use App\Model\Messages\WrongPassMessage;
+use App\Model\User;
 use Kdyby\Doctrine\EntityManager;
+use Nette\Http\FileUpload;
 use Nette\Utils\DateTime;
 
 
@@ -51,7 +54,7 @@ class MessageService
      * @param $data
      * @return GotchaMessage|LocationMessage|PongMessage|RegistrationMessage|RingingTimeoutMessage|UnlockMessage|WrongPassMessage
      */
-    public function proccessRecievedData($device, $data)
+    public function proccessRecievedData(&$device, $data)
     {
         switch ($data->type) {
             case Message::TYPE_PONG:

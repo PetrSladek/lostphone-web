@@ -17,6 +17,7 @@ use Gcm\Xmpp\Deamon;
 use Kdyby\Doctrine\EntityManager;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Tracy\Debugger;
 
 class DeamonCommand extends \Symfony\Component\Console\Command\Command {
 
@@ -69,8 +70,7 @@ class DeamonCommand extends \Symfony\Component\Console\Command\Command {
         };
         $this->gcm->onMessage[] = function(Deamon $gcm, RecievedMessage $message) use($output) {
 
-//            $output->writeln( print_r($message, true));
-
+            Debugger::log(print_r($message, true)); // ulozim prislou zpravu do info logu
 
             $device = $this->em->getRepository(Device::getClassName())->findOneBy(['gcmId' => $message->getFrom()]);
 
@@ -96,11 +96,16 @@ class DeamonCommand extends \Symfony\Component\Console\Command\Command {
             // Message
             $data = json_decode($data->message);
 
-            $msg = $this->messageService->proccessRecievedData($device, $data);
+            try {
+                $msg = $this->messageService->proccessRecievedData($device, $data);
+                $this->em->flush();
 
-            $output->writeln("Reciever message {$msg->getClassName()} from {$device->getGcmId()}");
+                $output->writeln("Reciever message {$msg->getClassName()} from {$device->getGcmId()}");
+            } catch(\Exception $e) {
+                $output->writeln("Error: {$e->getMessage()}");
+            }
 
-            $this->em->flush();
+
         };
 
         $this->gcm->run();

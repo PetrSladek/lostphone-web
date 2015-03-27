@@ -21,9 +21,9 @@ parameters:
 
         sizes:
             detail:
-                width: 220
-                height: 220
-                flag: centered
+                width: 800
+                height: 800
+                flag: fit
             thumb:
                 width: 172
                 height: 172
