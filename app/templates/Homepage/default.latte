@@ -68,7 +68,11 @@
       </div>
       <div class="modal-body">
 
-            {control frmLock}
+            <div class="row">
+                <div class="col-md-6 col-md-offset-2">
+                    {control frmLock}
+                </div>
+            </div>
 
       </div>
       <div class="modal-footer">
@@ -79,7 +83,7 @@
 </div>
 
 
-<div class="panel panel-default" style="position: absolute; z-index: 100; top: 100px; right: 100px;">
+<div class="panel panel-default" style="position: absolute; z-index: 100; top: 100px; right: 100px; width: 300px">
     <div class="panel-heading">
         Zprávy z telefonu
     </div>
@@ -128,7 +132,7 @@
             <div class="message-title">
                 <small>{$message->dateSent->format('j.n.Y H:i:s')}</small><br />
                 Pokus o odemčení!
-                <button n:if="$message->frontPhoto" type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-message-{$message->id}">Otevrit</button>
+                <button n:if="$message->frontPhoto" type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#modal-message-{$message->id}">Otevrit</button>
             </div>
         {elseif $message->isType($message::TYPE_LOCATION)}
             <div class="message-icon location">
@@ -146,7 +150,7 @@
             <div class="message-title">
                 <small>{$message->dateSent->format('j.n.Y H:i:s')}</small><br />
                 Stav SIM karty
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-message-{$message->id}">Otevrit</button>
+                <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#modal-message-{$message->id}">Otevrit</button>
             </div>
 
         {elseif $message->isType($message::TYPE_LOG)}
@@ -156,7 +160,7 @@
             <div class="message-title">
                 <small>{$message->dateSent->format('j.n.Y H:i:s')}</small><br />
                 Výpis volání a SMS
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-message-{$message->id}">Otevrit</button>
+                <button type="button" class="btn btn-primary  btn-xs" data-toggle="modal" data-target="#modal-message-{$message->id}">Otevrit</button>
             </div>
         {/if}
         </div>

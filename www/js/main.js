@@ -5,6 +5,9 @@ $(function(){
     var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 
 
+    function seconds(s) {
+        return s * 1000;
+    }
 
     //function initialize() {
     //
@@ -13,7 +16,7 @@ $(function(){
 
     setInterval(function() {
         $.nette.ajax(urlRefresh);
-    }, 1000*10);
+    }, seconds(10));
 
 
     $.nette.ext('position', {
@@ -28,13 +31,48 @@ $(function(){
                 this.marker.setMap(map);
                 map.setCenter(this.latLng);
 
-                return false;
+                //return false;
             }
         }
     }, {
         marker: null,
         latLng: null
     });
+
+    $.nette.ext('command', {
+        success: function (payload) {
+            if(payload.command) {
+
+                $.growl({
+                    title: payload.command.text,
+                    message: "příkaz odeslán do telefonu",
+                    duration: seconds(10),
+                    style: 'warning command-'+payload.command.id
+                });
+                //$.growl.error({ message: "The kitten is attacking!" });
+                //$.growl.notice({ message: "The kitten is cute!" });
+                //$.growl.warning({ message: "The kitten is ugly!" });
+
+            }
+
+            if(payload.ackeds) {
+                for(ack in payload.ackeds) {
+                    $.growl({
+                        title: payload.ackeds[ack].text,
+                        message: "příkaz dorazil do telefonu",
+                        duration: seconds(10),
+                        style: 'notice command-'+payload.ackeds[ack].id
+                    });
+                }
+            }
+        }
+    }, {
+
+    });
+
+
+
+
 
     $.nette.init();
 });

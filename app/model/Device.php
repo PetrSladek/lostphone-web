@@ -50,6 +50,12 @@ class Device extends BaseEntity {
      */
     protected $name;
 
+    /**
+     * @Column(type="boolean")
+     * @var boolean
+     */
+    protected $locked;
+
 
     /**
      * @ManyToOne(targetEntity="User", inversedBy="devices")
@@ -149,6 +155,23 @@ class Device extends BaseEntity {
     {
         $this->gcmId = $gcmId;
     }
+
+    /**
+     * @return boolean
+     */
+    public function isLocked()
+    {
+        return $this->locked;
+    }
+
+    /**
+     * @param boolean $locked
+     */
+    public function setLocked($locked = true)
+    {
+        $this->locked = $locked;
+    }
+
 
 
 

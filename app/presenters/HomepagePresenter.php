@@ -167,7 +167,7 @@ class HomepagePresenter extends BasePresenter
         $form->addSubmit("send", "Odeslat");
     	$form->onSuccess[] = $this->frmLockSucceeded;
 
-        $this->prepareRenderer($form);
+        $this->prepareRenderer($form, $ajax=true);
     	return $form;
     }
 
@@ -187,6 +187,10 @@ class HomepagePresenter extends BasePresenter
 
         $this->sendCommand($cmd);
 
+        $this->payload->command = [
+            'id' => $cmd->getId(),
+            'text' => 'Uzamknout'
+        ];
         $this->isAjax() ? $this->redrawControl() : $this->redirect('this');
 
     }
@@ -194,6 +198,16 @@ class HomepagePresenter extends BasePresenter
 
     public function handleRefresh() {
 //        sleep(1); // second
+
+        $repo = $this->em->getRepository(Command::getClassName());
+        $ackeds = $repo->findBy(['device' => $this->device, 'dateAck !='=>null, 'dateViewAck'=>null], ['dateSent' => 'desc']);
+        $now = new DateTime();
+        foreach($ackeds as $ack) {
+            $this->payload->ackeds[] = $this->commandToPayload($ack);
+            $ack->dateViewAck = $now;
+        }
+        $this->em->flush();
+
         $this->isAjax() ? $this->redrawControl() : $this->redirect('this');
     }
 
@@ -203,6 +217,7 @@ class HomepagePresenter extends BasePresenter
         $cmd = new PingCommand();
         $this->sendCommand($cmd);
 
+        $this->payload->command = $this->commandToPayload($cmd);
         $this->isAjax() ? $this->redrawControl() : $this->redirect('this');
     }
 
@@ -212,27 +227,29 @@ class HomepagePresenter extends BasePresenter
         $cmd->setCloseAfter(20000);
         $this->sendCommand($cmd);
 
+        $this->payload->command = $this->commandToPayload($cmd);
         $this->isAjax() ? $this->redrawControl() : $this->redirect('this');
     }
 
-    public function handleLock()
-    {
-        $cmd = new LockCommand();
-
-        $cmd->setDisplayText("Vrať mi ho!");
-        $cmd->setOwnerPhoneNumber("+420 732 288 134");
-        $cmd->setPassword("1234");
-
-        $this->sendCommand($cmd);
-
-        $this->isAjax() ? $this->redrawControl() : $this->redirect('this');
-    }
+//    public function handleLock()
+//    {
+//        $cmd = new LockCommand();
+//
+//        $cmd->setDisplayText("Vrať mi ho!");
+//        $cmd->setOwnerPhoneNumber("+420 732 288 134");
+//        $cmd->setPassword("1234");
+//
+//        $this->sendCommand($cmd);
+//
+//        $this->isAjax() ? $this->redrawControl() : $this->redirect('this');
+//    }
 
     public function handleLocate()
     {
         $cmd = new LocateCommand();
         $this->sendCommand($cmd);
 
+        $this->payload->command = $this->commandToPayload($cmd);
         $this->isAjax() ? $this->redrawControl() : $this->redirect('this');
     }
 
@@ -241,6 +258,7 @@ class HomepagePresenter extends BasePresenter
         $cmd = new GetLogCommand();
         $this->sendCommand($cmd);
 
+        $this->payload->command = $this->commandToPayload($cmd);
         $this->isAjax() ? $this->redrawControl() : $this->redirect('this');
     }
 
@@ -249,6 +267,7 @@ class HomepagePresenter extends BasePresenter
         $cmd = new EncryptStorageCommand();
         $this->sendCommand($cmd);
 
+        $this->payload->command = $this->commandToPayload($cmd);
         $this->isAjax() ? $this->redrawControl() : $this->redirect('this');
     }
 
@@ -257,6 +276,7 @@ class HomepagePresenter extends BasePresenter
         $cmd = new WipeDataCommand();
         $this->sendCommand($cmd);
 
+        $this->payload->command = $this->commandToPayload($cmd);
         $this->isAjax() ? $this->redrawControl() : $this->redirect('this');
     }
 
@@ -277,6 +297,36 @@ class HomepagePresenter extends BasePresenter
 
         $message = new \Gcm\Message($this->device->getGcmId(), $cmd->toGCMdata(), "collapse-".$cmd->getType());
         return $this->gcm->send($message);
+    }
+
+
+
+    protected function commandToPayload(Command $command) {
+        $ret = ['id' => $command->getId()];
+        switch($command->getType()) {
+            case Command::TYPE_ENCRYPTSTORAGE:
+                $ret['text'] = 'Zasifrovat disk';
+            break;
+            case Command::TYPE_WIPEDATA:
+                $ret['text'] = 'Tovarni nastaveni';
+            break;
+            case Command::TYPE_RING:
+                $ret['text'] = 'Prozvonit';
+            break;
+            case Command::TYPE_GETLOG:
+                $ret['text'] = 'Vypis volani/SMS';
+            break;
+            case Command::TYPE_LOCATE:
+                $ret['text'] = 'Lokalizovat';
+            break;
+            case Command::TYPE_LOCK:
+                $ret['text'] = 'Uzamknout';
+            break;
+            case Command::TYPE_PING:
+                $ret['text'] = 'Ping';
+            break;
+        }
+        return $ret;
     }
 
 

@@ -8,6 +8,7 @@
 
 namespace App\Commands;
 
+use App\Model\Commands\LockCommand;
 use App\Model\Device;
 use App\Model\Commands\Command;
 
@@ -15,6 +16,7 @@ use App\Services\MessageService;
 use Gcm\RecievedMessage;
 use Gcm\Xmpp\Deamon;
 use Kdyby\Doctrine\EntityManager;
+use Nette\InvalidStateException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Tracy\Debugger;
@@ -68,10 +70,14 @@ class DeamonCommand extends \Symfony\Component\Console\Command\Command {
         $this->gcm->onStop[] = function(Deamon $gcm) use($output) {
             $output->writeln("Deamon has stopped");
         };
+        $this->gcm->onDisconnect[] = function(Deamon $gcm) use($output) {
+            $output->writeln("Deamon has been disconected");
+        };
         $this->gcm->onMessage[] = function(Deamon $gcm, RecievedMessage $message) use($output) {
 
             Debugger::log(print_r($message, true)); // ulozim prislou zpravu do info logu
 
+            /** @var Device $device */
             $device = $this->em->getRepository(Device::getClassName())->findOneBy(['gcmId' => $message->getFrom()]);
 
             $data = $message->getData();
@@ -81,21 +87,20 @@ class DeamonCommand extends \Symfony\Component\Console\Command\Command {
                 $acked = new \DateTime($data->ack);
                 $id =  $data->id;
 
-                /** @var Command $cmd */
-                $cmd = $this->em->find( Command::getClassName(), $id);
-                if($cmd->getDevice() == $device) {
-                    $cmd->setDateAck( $acked );
+                try {
+                    $this->messageService->ackCommand($id, $acked, $device);
                     $this->em->flush();
+
                     $output->writeln("Command {$id} ACKed at ".$acked->format('j.n.Y H:i:s'));
-                } else {
-                    $output->writeln("Command sended to {$cmd->getDevice()->getGcmId()}, but acked from {$device->getGcmId()}");
+                } catch (InvalidStateException $e) {
+                    $output->writeln($e->getMessage());
                 }
+
                 return;
             }
 
             // Message
             $data = json_decode($data->message);
-
             try {
                 $msg = $this->messageService->proccessRecievedData($device, $data);
                 $this->em->flush();

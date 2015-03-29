@@ -101,10 +101,8 @@ class ApiPresenter extends BasePresenter
 
 
     public function actionAck($id) {
-        /** @var Command $cmd */
-        $cmd = $this->em->find( Command::getClassName(), $id );
-        $cmd->setDateAck( new DateTime($this->input->date) );
 
+        $this->messageService->ackCommand($id, $this->input->date, $this->device);
         $this->em->flush();
 
         $this->sendResponse(new TextResponse(0));

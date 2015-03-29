@@ -63,7 +63,7 @@ abstract class BasePresenter extends Presenter
 
 
 
-    public function prepareRenderer(&$form) {
+    public function prepareRenderer(&$form, $ajax = false) {
         // setup form rendering
         $renderer = $form->getRenderer();
         $renderer->wrappers['controls']['container'] = NULL;
@@ -74,8 +74,8 @@ abstract class BasePresenter extends Presenter
         $renderer->wrappers['control']['description'] = 'span class=help-block';
         $renderer->wrappers['control']['errorcontainer'] = 'span class=help-block';
 
-// make form and controls compatible with Twitter Bootstrap
-        $form->getElementPrototype()->class('form-horizontal');
+        // make form and controls compatible with Twitter Bootstrap
+        $form->getElementPrototype()->class('form-horizontal' . ($ajax ? ' ajax' : null));
 
         foreach ($form->getControls() as $control) {
             if ($control instanceof Controls\Button) {

@@ -26,9 +26,9 @@ a[href^="#error:"] {
     to {transform: scale(1);}
 }
 
-#snippet--messages div:first-child {
-    animation: 1s myfirst ease-in-out;
-}
+/*#snippet--messages div:first-child {*/
+    /*animation: 1s myfirst ease-in-out;*/
+/*}*/
 
 .messages {
 

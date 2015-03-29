@@ -56,6 +56,11 @@ abstract class Command extends BaseEntity {
      */
     protected $dateAck;
 
+    /**
+     * @Column(type="datetime", nullable=true)
+     * @var DateTime|null Date when user view Acknowlage
+     */
+    protected $dateViewAck;
 
     /**
      * @ManyToOne(targetEntity="App\Model\Device", inversedBy="commands")

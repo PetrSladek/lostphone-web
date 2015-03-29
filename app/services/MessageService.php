@@ -9,6 +9,8 @@
 
 namespace App\Services;
 
+use App\Model\Commands\Command;
+use App\Model\Commands\LockCommand;
 use App\Model\Device;
 use App\Model\Image;
 use App\Model\Messages\GotchaMessage;
@@ -24,6 +26,7 @@ use App\Model\Messages\WrongPassMessage;
 use App\Model\User;
 use Kdyby\Doctrine\EntityManager;
 use Nette\Http\FileUpload;
+use Nette\InvalidStateException;
 use Nette\Utils\DateTime;
 
 
@@ -48,10 +51,22 @@ class MessageService
         $this->imageService = $imageService;
     }
 
+    public function ackCommand($id, $date, $device) {
+        /** @var Device $device */
+        /** @var Command $cmd */
+        $cmd = $this->em->find( Command::getClassName(), $id );
+        if($cmd->getDevice() != $device)
+            throw new InvalidStateException("Command sended to {$cmd->getDevice()->getGcmId()}, but acked from {$device->getGcmId()}");
+
+
+        $cmd->setDateAck( DateTime::from($date) );
+        if($cmd instanceof LockCommand)
+            $device->setLocked(true);
+    }
 
     /**
-     * @param $device
-     * @param $data
+     * @param Device $device
+     * @param \stdClass $data
      * @return GotchaMessage|LocationMessage|PongMessage|RegistrationMessage|RingingTimeoutMessage|UnlockMessage|WrongPassMessage
      */
     public function proccessRecievedData(&$device, $data)
@@ -99,6 +114,7 @@ class MessageService
 
             case Message::TYPE_UNLOCK:
                 $msg = new UnlockMessage();
+                $device->setLocked(false);
                 break;
 
             case Message::TYPE_WRONGPASS:

@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "790fb8a9b99c465bdc7f06ed514ff3b8",
+    "hash": "d01acdd807e9e231b674c690d7bf6a6f",
     "packages": [
         {
             "name": "abhinavsingh/jaxl",
@@ -278,12 +278,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/common.git",
-                "reference": "23cdbfae8d673d79bb06790a126c96f8b648a052"
+                "reference": "bd6a9bf487f1d6086a704c97fad465c16827aa8d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/common/zipball/23cdbfae8d673d79bb06790a126c96f8b648a052",
-                "reference": "23cdbfae8d673d79bb06790a126c96f8b648a052",
+                "url": "https://api.github.com/repos/doctrine/common/zipball/bd6a9bf487f1d6086a704c97fad465c16827aa8d",
+                "reference": "bd6a9bf487f1d6086a704c97fad465c16827aa8d",
                 "shasum": ""
             },
             "require": {
@@ -343,7 +343,7 @@
                 "persistence",
                 "spl"
             ],
-            "time": "2015-03-15 09:03:43"
+            "time": "2015-03-26 00:27:39"
         },
         {
             "name": "doctrine/dbal",
@@ -351,12 +351,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/dbal.git",
-                "reference": "3b901cd314d1f79a54c93131d634aad507114b34"
+                "reference": "8e65cdc780e7deb129f9e792dc929ba8792ac67e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/dbal/zipball/3b901cd314d1f79a54c93131d634aad507114b34",
-                "reference": "3b901cd314d1f79a54c93131d634aad507114b34",
+                "url": "https://api.github.com/repos/doctrine/dbal/zipball/8e65cdc780e7deb129f9e792dc929ba8792ac67e",
+                "reference": "8e65cdc780e7deb129f9e792dc929ba8792ac67e",
                 "shasum": ""
             },
             "require": {
@@ -415,7 +415,7 @@
                 "persistence",
                 "queryobject"
             ],
-            "time": "2015-03-16 15:54:31"
+            "time": "2015-03-27 11:15:28"
         },
         {
             "name": "doctrine/inflector",
@@ -598,12 +598,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/doctrine2.git",
-                "reference": "9dfa20d3afbb7a102eec35ce67772b584ddccebb"
+                "reference": "ecb1e1060a0abf87df3f7ec1786da2d9ac5e89a3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/doctrine2/zipball/9dfa20d3afbb7a102eec35ce67772b584ddccebb",
-                "reference": "9dfa20d3afbb7a102eec35ce67772b584ddccebb",
+                "url": "https://api.github.com/repos/doctrine/doctrine2/zipball/ecb1e1060a0abf87df3f7ec1786da2d9ac5e89a3",
+                "reference": "ecb1e1060a0abf87df3f7ec1786da2d9ac5e89a3",
                 "shasum": ""
             },
             "require": {
@@ -663,7 +663,7 @@
                 "database",
                 "orm"
             ],
-            "time": "2015-03-17 22:48:41"
+            "time": "2015-03-23 22:22:04"
         },
         {
             "name": "google/apiclient",
@@ -671,12 +671,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/google/google-api-php-client.git",
-                "reference": "9bb73ea0c19585e0d946b50c4236aaafa9c0ecd3"
+                "reference": "5d379890f63c1427bb5222f596886b9e0225511a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/google/google-api-php-client/zipball/9bb73ea0c19585e0d946b50c4236aaafa9c0ecd3",
-                "reference": "9bb73ea0c19585e0d946b50c4236aaafa9c0ecd3",
+                "url": "https://api.github.com/repos/google/google-api-php-client/zipball/5d379890f63c1427bb5222f596886b9e0225511a",
+                "reference": "5d379890f63c1427bb5222f596886b9e0225511a",
                 "shasum": ""
             },
             "require": {
@@ -705,7 +705,7 @@
             "keywords": [
                 "google"
             ],
-            "time": "2015-03-22 12:14:38"
+            "time": "2015-03-26 12:19:00"
         },
         {
             "name": "kdyby/annotations",
@@ -1262,12 +1262,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nette/application.git",
-                "reference": "4d40d7e97864f81f33466b05bc5270e0dcce29c6"
+                "reference": "969c365707ca6394f2bb03a7cbf155a67d46a915"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nette/application/zipball/4d40d7e97864f81f33466b05bc5270e0dcce29c6",
-                "reference": "4d40d7e97864f81f33466b05bc5270e0dcce29c6",
+                "url": "https://api.github.com/repos/nette/application/zipball/969c365707ca6394f2bb03a7cbf155a67d46a915",
+                "reference": "969c365707ca6394f2bb03a7cbf155a67d46a915",
                 "shasum": ""
             },
             "require": {
@@ -1314,7 +1314,7 @@
             ],
             "description": "Nette Application MVC Component",
             "homepage": "http://nette.org",
-            "time": "2015-03-10 01:32:37"
+            "time": "2015-03-27 15:11:58"
         },
         {
             "name": "nette/bootstrap",
@@ -2281,6 +2281,44 @@
             "time": "2015-03-09 23:43:12"
         },
         {
+            "name": "petrsladek/gcm",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/PetrSladek/Gcm.git",
+                "reference": "b1437e1b635f2222fe67ee7176c94c3e11c07b7f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/PetrSladek/Gcm/zipball/b1437e1b635f2222fe67ee7176c94c3e11c07b7f",
+                "reference": "b1437e1b635f2222fe67ee7176c94c3e11c07b7f",
+                "shasum": ""
+            },
+            "require": {
+                "abhinavsingh/jaxl": "3.0.0",
+                "nette/utils": "~2.2.0",
+                "php": ">= 5.3.7"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "proprietary"
+            ],
+            "authors": [
+                {
+                    "name": "Petr Sladek",
+                    "email": "petr.sladek@skaut.cz"
+                }
+            ],
+            "description": "Google Cloud Messaging PHP library. Sender for sending Messages over HTTP amd Deamon for sending and recieving messages over XMPP (CCS).",
+            "time": "2015-03-27 16:48:18"
+        },
+        {
             "name": "symfony/console",
             "version": "v2.5.0",
             "target-dir": "Symfony/Component/Console",
@@ -2399,19 +2437,19 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nette/tester.git",
-                "reference": "a3139819bb013256c7fc64fea37070102dab2c30"
+                "reference": "c6e3ed65bcb0aa163ee8918d04dc0986ea8af2f4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nette/tester/zipball/a3139819bb013256c7fc64fea37070102dab2c30",
-                "reference": "a3139819bb013256c7fc64fea37070102dab2c30",
+                "url": "https://api.github.com/repos/nette/tester/zipball/c6e3ed65bcb0aa163ee8918d04dc0986ea8af2f4",
+                "reference": "c6e3ed65bcb0aa163ee8918d04dc0986ea8af2f4",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.0"
             },
             "bin": [
-                "Tester/tester"
+                "src/tester"
             ],
             "type": "library",
             "extra": {
@@ -2421,7 +2459,7 @@
             },
             "autoload": {
                 "classmap": [
-                    "Tester/"
+                    "src/"
                 ]
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -2447,13 +2485,13 @@
                 "testing",
                 "unit"
             ],
-            "time": "2015-03-18 16:32:50"
+            "time": "2015-03-27 14:16:22"
         }
     ],
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "kdyby/console": 20
+        "petrsladek/gcm": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

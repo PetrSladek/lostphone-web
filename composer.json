@@ -1,17 +1,14 @@
 {
 	"name": "nette/sandbox",
-	"description": "The sandbox is a pre-packaged Nette Framework project, basic configured structure for your application.",
-	"homepage": "http://nette.org",
+	"description": "Frontend application for LostPhone",
+	"homepage": "http://www.lostphone.cz",
 	"type": "project",
 	"license": ["Unlicense"],
 	"authors": [
 		{
-			"name": "David Grudl",
-			"homepage": "http://davidgrudl.com"
-		},
-		{
-			"name": "Nette Community",
-			"homepage": "http://nette.org/contributors"
+            "name": "Petr Sladek",
+            "email": "petr.sladek@skaut.cz",
+			"homepage": "http://petr-sladek.cz"
 		}
 	],
 	"require": {
@@ -21,11 +18,12 @@
 		"kdyby/doctrine": "v2.3.0",
 		"kdyby/google": "~0.1",
 		"abhinavsingh/jaxl": "3.0.0",
-		"kdyby/console": "~2.3@dev",
-		"symfony/console": "2.5"
+		"kdyby/console": "~2.3",
+		"symfony/console": "2.5",
+		"petrsladek/gcm": "dev-master"
 	},
 	"require-dev": {
 		"nette/tester": "~1.0"
 	},
-	"minimum-stability": "dev"
+  	"minimum-stability": "dev"
 }
