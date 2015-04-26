@@ -46,11 +46,11 @@
 
 
         {if $user->isLoggedIn()}
-        <form n:name="frmChangeDevice" class="navbar-form navbar-left">
+        <form n:name="frmChangeDevice" class="ajax navbar-form navbar-left">
             <div class="form-group">
-                <select n:name="deviceId" class="form-control" />
+                <select n:name="deviceId" class="form-control" onchange="this.form.submit()"/>
             </div>
-            <button n:name="send" class="btn btn-default">Změnit</button>
+            {*<button n:name="send" class="btn btn-default">Změnit</button>*}
         </form>
         {/if}
 

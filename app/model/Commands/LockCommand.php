@@ -34,13 +34,13 @@ class LockCommand extends Command {
     protected $password;
 
     /**
-     * @Column(type="string")
+     * @Column(type="string", nullable=true)
      * @var string
      */
     protected $ownerPhoneNumber;
 
     /**
-     * @Column(type="string")
+     * @Column(type="string", nullable=true)
      * @var string
      */
     protected $displayText;

@@ -123,7 +123,12 @@ class MessageService
                 $photo = $data->frontPhoto;
 
                 if ($photo) {
+
+                    // otocime o 90 stupnu
+//                    $photo->toImage()->rotate(90, \Nette\Utils\Image::rgb(255,255,255))->save($photo->getTemporaryFile());
+
                     $file = $this->imageService->uploadImage($photo);
+
                     $image = new Image();
                     $image->setFilename($file->getBasename());
                     $image->setExtension($file->getExtension());

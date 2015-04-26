@@ -54,7 +54,7 @@ class Device extends BaseEntity {
      * @Column(type="boolean")
      * @var boolean
      */
-    protected $locked;
+    protected $locked = false;
 
 
     /**

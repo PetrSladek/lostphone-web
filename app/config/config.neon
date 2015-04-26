@@ -53,7 +53,8 @@ doctrine:
 console:
     url: http://www.lostphone.cz
     commands:
-        - App\Commands\DeamonCommand
+        - App\Commands\DaemonCommand
+        - App\Commands\WebSocketServerCommand
 
 google:
     clientId: # in config.local.neon
@@ -75,7 +76,7 @@ services:
 	- App\Services\MessageService
 
 	- Gcm\Http\Sender(%google.apiKey%)
-	- Gcm\Xmpp\Deamon(%google.senderId%, %google.apiKey%)
+	- Gcm\Xmpp\Daemon(%google.senderId%, %google.apiKey%)
 
 	- App\RouterFactory
 	router: @App\RouterFactory::createRouter

@@ -20,6 +20,7 @@
 		"abhinavsingh/jaxl": "3.0.0",
 		"kdyby/console": "~2.3",
 		"symfony/console": "2.5",
+        "hoa/websocket": "~2.0",
 		"petrsladek/gcm": "dev-master"
 	},
 	"require-dev": {

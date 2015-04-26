@@ -4,7 +4,9 @@
         center: { lat: {$pos->lat}, lng: {$pos->lng} },
         zoom: {$pos->zoom}
     };
-    var urlRefresh = {link refresh!};
+    var urlEventsTemplate = {link events deviceId=>"DEVICEID"};
+    var urlRefreshTemplate = {link refresh! deviceId=>"DEVICEID"};
+    var deviceId = {=$device ? $device->id : ''}
     </script>
     {include #parent}
 {/block}
@@ -12,21 +14,20 @@
 
 
 <div style="position: absolute; z-index: 100; top: 100px; left: 100px; width: 250px;">
-    <div class="panel panel-primary">
-        <div class="panel-heading">
-            Příkazy
-        </div>
-        <div class="panel-body">
+    {*<div class="panel panel-primary">*}
+        {*<div class="panel-heading">*}
+            {*Příkazy*}
+        {*</div>*}
+        {*<div class="panel-body" n:snippet="command-buttons">*}
             <a n:href="ping!" class="ajax btn btn-default btn-block">Ping</a>
-            <a n:href="ring!" class="ajax btn btn-default btn-block">Prozvonit</a>
-            <a data-toggle="modal" href="#modal-command-lock" class="ajax btn btn-default btn-block">Uzamknout</a>
-            <a n:href="locate!" class="ajax btn btn-default btn-block">Lokalizovat</a>
-            <a n:href="getLog!" class="ajax btn btn-default btn-block">Výpis volání/SMS</a>
-            <a n:href="encryptStorage!" class="ajax btn btn-default btn-block">Zašifrovat data</a>
-            <a n:href="wipeData!" class="ajax btn btn-default btn-block">Tovární nastavení</a>
-        </div>
-    </div>
-    <div class="panel panel-default">
+            <a n:href="ring!" class="ajax btn btn-default btn-block btn-lg"><i class="fa fa-mobile-phone"></i> Prozvonit</a>
+            <a n:href="lock!" class="ajax btn btn-default btn-block btn-lg"><i class="fa fa-lock"></i> Uzamknout</a>
+            <a n:href="locate!" class="ajax btn btn-default btn-block btn-lg"><i class="fa fa-globe"></i> Lokalizovat</a>
+
+            <br /><br />
+        {*</div>*}
+    {*</div>*}
+    {*<div class="panel panel-default">
         <div class="panel-heading">
             Příkazy
         </div>
@@ -56,30 +57,53 @@
             {/if}
             </div>
         </div>
-    </div>
-</div>
+    </div>*}
 
-<div class="modal fade" id="modal-command-lock" tabindex="-1" role="dialog" aria-labelledby="modal-command-lock-label" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="modal-command-lock-label">Uzamknout telefon</h4>
-      </div>
-      <div class="modal-body">
-
-            <div class="row">
-                <div class="col-md-6 col-md-offset-2">
-                    {control frmLock}
+    {snippet locked}
+    <div n:if="$device" id="device-locked" n:class="panel,panel-danger, !$device->isLocked() ? hidden">
+        <div class="panel-heading">
+            Zařízení je zamknuto
+        </div>
+        <div class="panel-body">
+        {form frmLock}
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label n:name="displayText">Zpráva na displej</label>
+                    <input class="form-control" n:name="displayText" placeholder="Napište nálezci zprávu">
                 </div>
             </div>
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label n:name="ownerPhoneNumber">Vaše tel.číslo</label>
+                    <input class="form-control" n:name="ownerPhoneNumber" placeholder="Zadejte číslo pro zavolání zpět">
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label n:name="pin">PIN pro odemčení</label>
+                    <input class="form-control" n:name="pin" placeholder="Zadejte PIN pro odemčení">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <button n:name="send" class="btn btn-primary btn-block">Nastavit</button>
+                </div>
+            </div>
+        {/form}
 
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Zavřít</button>
-      </div>
+<div class="row">
+            <div class="col-md-12">
+                <br />
+                <br />
+                <a n:href="getLog!" class="ajax btn btn-default btn-block">Výpis volání/SMS</a>
+                <a n:href="encryptStorage!" class="ajax btn btn-default btn-block">Zašifrovat data</a>
+                <a n:href="wipeData!" class="ajax btn btn-default btn-block">Tovární nastavení</a>
+            </div>
+</div>
+
+        </div>
     </div>
-  </div>
+    {/snippet}
 </div>
 
 
@@ -132,7 +156,7 @@
             <div class="message-title">
                 <small>{$message->dateSent->format('j.n.Y H:i:s')}</small><br />
                 Pokus o odemčení!
-                <button n:if="$message->frontPhoto" type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#modal-message-{$message->id}">Otevrit</button>
+                <button n:if="$message->frontPhoto" type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#modal-message-{$message->id}">Otevřít</button>
             </div>
         {elseif $message->isType($message::TYPE_LOCATION)}
             <div class="message-icon location">
@@ -141,7 +165,7 @@
             <div class="message-title">
                 <small>{$message->dateSent->format('j.n.Y H:i:s')}</small><br />
                 Lokalizováno{* na <strong>{$message->lat}</strong>, <strong>{$message->lng}</strong>*}
-                <button type="button" class="btn btn-primary">Ukazat na mape</button>
+                <button type="button" class="btn btn-primary" data-position-lat="{$message->lat}" data-position-lng="{$message->lng}" data-device-name="{$message->device->name}">Ukázat na mapě</button>
             </div>
         {elseif $message->isType($message::TYPE_SIMSTATECHANGED)}
             <div class="message-icon simstatechanged">
@@ -150,7 +174,7 @@
             <div class="message-title">
                 <small>{$message->dateSent->format('j.n.Y H:i:s')}</small><br />
                 Stav SIM karty
-                <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#modal-message-{$message->id}">Otevrit</button>
+                <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#modal-message-{$message->id}">Otevřít</button>
             </div>
 
         {elseif $message->isType($message::TYPE_LOG)}
@@ -160,7 +184,7 @@
             <div class="message-title">
                 <small>{$message->dateSent->format('j.n.Y H:i:s')}</small><br />
                 Výpis volání a SMS
-                <button type="button" class="btn btn-primary  btn-xs" data-toggle="modal" data-target="#modal-message-{$message->id}">Otevrit</button>
+                <button type="button" class="btn btn-primary  btn-xs" data-toggle="modal" data-target="#modal-message-{$message->id}">Otevřít</button>
             </div>
         {/if}
         </div>

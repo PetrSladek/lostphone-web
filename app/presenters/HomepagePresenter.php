@@ -21,6 +21,8 @@ use Nette\Http\IResponse;
 use Nette\InvalidStateException;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\DateTime;
+use Nette\Utils\Random;
+use Nette\Utils\Strings;
 
 
 /**
@@ -94,8 +96,6 @@ class HomepagePresenter extends BasePresenter
         return $form;
     }
 
-
-
     /**
      * @param Form $form
      */
@@ -104,8 +104,6 @@ class HomepagePresenter extends BasePresenter
         $this->deviceId = $form->values->deviceId == $this->me->getFirstDevice()->getId() ? null : $form->values->deviceId;
         $this->isAjax() ? $this->redrawControl() : $this->redirect('this');
     }
-
-
 
 
     public function renderDefault() {
@@ -143,11 +141,12 @@ class HomepagePresenter extends BasePresenter
         $this->template->pos = $pos;
 
 
-        if($this->isAjax()) {
-            $this->payload->position = $pos;
-            $this->payload->device = $this->device ? $this->device->getName() : null;
-            $this->redrawControl('message');
-        }
+        $this->payload->position = $pos;
+        $this->payload->device = $this->device ? [
+            'name' => $this->device->getName(),
+            'locked' => $this->device->isLocked()
+        ] : null;
+
     }
 
 
@@ -208,7 +207,9 @@ class HomepagePresenter extends BasePresenter
         }
         $this->em->flush();
 
-        $this->isAjax() ? $this->redrawControl() : $this->redirect('this');
+        $this->redrawControl('messages');
+
+        !$this->isAjax() ?  $this->redirect('this') : null;
     }
 
 
@@ -231,18 +232,18 @@ class HomepagePresenter extends BasePresenter
         $this->isAjax() ? $this->redrawControl() : $this->redirect('this');
     }
 
-//    public function handleLock()
-//    {
-//        $cmd = new LockCommand();
-//
-//        $cmd->setDisplayText("Vrať mi ho!");
-//        $cmd->setOwnerPhoneNumber("+420 732 288 134");
-//        $cmd->setPassword("1234");
-//
-//        $this->sendCommand($cmd);
-//
-//        $this->isAjax() ? $this->redrawControl() : $this->redirect('this');
-//    }
+    public function handleLock()
+    {
+        $cmd = new LockCommand();
+
+        $cmd->setDisplayText(null);
+        $cmd->setOwnerPhoneNumber("+420000000000");
+        $cmd->setPassword( Random::generate(8) );
+
+        $this->sendCommand($cmd);
+
+        $this->isAjax() ? $this->redrawControl() : $this->redirect('this');
+    }
 
     public function handleLocate()
     {
@@ -280,10 +281,6 @@ class HomepagePresenter extends BasePresenter
         $this->isAjax() ? $this->redrawControl() : $this->redirect('this');
     }
 
-
-
-
-
     protected function sendCommand(Command $cmd) {
 
         if(!$this->device)
@@ -298,8 +295,6 @@ class HomepagePresenter extends BasePresenter
         $message = new \Gcm\Message($this->device->getGcmId(), $cmd->toGCMdata(), "collapse-".$cmd->getType());
         return $this->gcm->send($message);
     }
-
-
 
     protected function commandToPayload(Command $command) {
         $ret = ['id' => $command->getId()];
@@ -329,6 +324,44 @@ class HomepagePresenter extends BasePresenter
         return $ret;
     }
 
+
+
+//    public function actionEvents() {
+//        header('Content-Type: text/event-stream');
+//        header('Cache-Control: no-cache'); // recommended to prevent caching of event data.
+//
+//        /**
+//         * Constructs the SSE data format and flushes that data to the client.
+//         *
+//         * @param string $id Timestamp/id of this connection.
+//         * @param string $msg Line of text that should be transmitted.
+//         */
+//        function sendMsg($id, $msg) {
+//            echo "id: $id" . PHP_EOL;
+//            echo "data: $msg" . PHP_EOL;
+//            echo PHP_EOL;
+//            ob_flush();
+//            flush();
+//        }
+//
+//
+//        $repo = $this->em->getRepository(Message::getClassName());
+//        /** @var Message $lastMessage */
+//        $lastMessage = $repo->findOneBy(['device' => $this->device], ['dateSent' => 'desc']);
+//
+//        $lastId = $lastMessage ? $lastMessage->id : 0;
+//
+//
+//        $lastMessage = $repo->findOneBy(['device' => $this->device, 'id >' => $lastId]);
+//        if ($lastMessage) {
+//            $lastId = $lastMessage->id;
+//            sendMsg($lastId, $lastMessage->getClassName());
+//            sleep(1);
+//        }
+//
+//
+//        exit;
+//    }
 
 
 }
