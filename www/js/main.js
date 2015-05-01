@@ -14,29 +14,90 @@ $(function(){
     //}
     //google.maps.event.addDomListener(window, 'load', initialize);
 
-    setInterval(function() {
-        $.nette.ajax(urlRefresh);
-    }, seconds(10));
+    //if (!!window.EventSource) {
+    //    // Reading Ecents
+    //    var source = new EventSource(urlEventsTemplate.replace("DEVICEID", deviceId));
+    //    source.onmessage = function (e) {
+    //        console.log(e);
+    //    };
+    //
+    //} else {
+        // Ajax Refresh by Interval
+        setInterval(function () {
+            var urlRefresh = urlRefreshTemplate.replace("DEVICEID", deviceId);
+            $.nette.ajax(urlRefresh);
+        }, seconds(10));
+    //}
+
+
+    if ("WebSocket" in window) {
+        try {
+
+            socket = new WebSocket(websocketUrl);
+            socket.onopen = function () {
+                console.log('connection is opened');
+                socket.send(JSON.stringify({type: 'newDeviceListening', 'data': deviceId}));
+                return;
+            };
+            socket.onmessage = function (msg) {
+
+                if (msg.data == 'newMessage') {
+                    var urlRefresh = urlRefreshTemplate.replace("DEVICEID", deviceId);
+                    $.nette.ajax(urlRefresh);
+                }
+                console.log(msg.data);
+
+                return;
+            };
+            socket.onclose = function () {
+                console.log('connection is closed');
+                return;
+            };
+        }
+        catch (e) {
+
+            console.log(e);
+        }
+    }
+
+
+    function changeMapPosition(position, device) {
+        var latLng = new google.maps.LatLng(position.lat, position.lng);
+        var marker = new google.maps.Marker({
+            position: latLng,
+            title: device + " @ " + position.find
+        });
+        marker.setMap(map);
+        map.setCenter(latLng);
+    }
+
+
+    $(document).on('click','[data-position-lat][data-position-lng]',function() {
+        var position = {
+            lat: $(this).data('position-lat'),
+            lng: $(this).data('position-lng')
+        }
+        var device = $(this).data('device-name') ? $(this).data('device-name') : null;
+
+        changeMapPosition(position, device);
+    });
 
 
     $.nette.ext('position', {
         success: function (payload) {
             if(payload.position && map && payload.position.find) {
-
-                this.latLng = new google.maps.LatLng(payload.position.lat, payload.position.lng);
-                this.marker = new google.maps.Marker({
-                    position: this.latLng,
-                    title: payload.device + " @ " + payload.position.find
-                });
-                this.marker.setMap(map);
-                map.setCenter(this.latLng);
-
-                //return false;
+                changeMapPosition(payload.position, payload.device.name);
+            }
+            if(payload.state.deviceId) {
+                deviceId = payload.state.deviceId;
+            }
+            if(payload.device.locked) {
+                $('#device-locked').removeClass('hidden');
+            } else {
+                $('#device-locked').addClass('hidden');
             }
         }
     }, {
-        marker: null,
-        latLng: null
     });
 
     $.nette.ext('command', {
@@ -49,10 +110,6 @@ $(function(){
                     duration: seconds(10),
                     style: 'warning command-'+payload.command.id
                 });
-                //$.growl.error({ message: "The kitten is attacking!" });
-                //$.growl.notice({ message: "The kitten is cute!" });
-                //$.growl.warning({ message: "The kitten is ugly!" });
-
             }
 
             if(payload.ackeds) {

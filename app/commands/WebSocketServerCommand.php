@@ -36,12 +36,10 @@ class WebSocketServerCommand extends \Symfony\Component\Console\Command\Command 
 
 
 
-    public function __construct()
+    public function __construct(\Hoa\Socket\Server $server)
     {
         parent::__construct();
-
-
-        $this->server = new Server( new \Hoa\Socket\Server('tcp://127.0.0.1:8889') );
+        $this->server = new Server( $server ); // tcp://127.0.0.1:8889
     }
 
 
@@ -60,20 +58,20 @@ class WebSocketServerCommand extends \Symfony\Component\Console\Command\Command 
 
         $this->server->on('open', function ( Bucket $bucket ) use ($output, &$connections) {
 
-            echo 'new connection', "\n";
-//            $connections[] = $bucket;
+            $now = new DateTime();
+            if ($output->isVerbose())
+                $output->writeln("[{$now->format('j.n.Y H:i:s')}] New connection");
 
             return;
         });
         $this->server->on('close', function ( Bucket $bucket ) use ($output, &$connections) {
 
-            echo 'connection closed', "\n";
-            // find and delete
-//            $connections[] = $bucket;
+            $now = new DateTime();
+            if ($output->isVerbose())
+                $output->writeln("[{$now->format('j.n.Y H:i:s')}] Connection closed");
 
             return;
         });
-
         $this->server->on('message', function ( Bucket $bucket ) use ($output, &$connections) {
 
             try {
@@ -111,7 +109,6 @@ class WebSocketServerCommand extends \Symfony\Component\Console\Command\Command 
             }
             return;
         });
-
 
         $this->server->run();
 

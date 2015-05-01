@@ -5,9 +5,23 @@
 # http://nette.org/security-warning
 #
 parameters:
-    google:
+    websockets:
+        clientUrl: # in config.local.neon
+        serverUrl: # in config.local.neon
+
+    database: # nastaveni pripojeni k Databazi
+        user: # in config.local.neon
+        password: # in config.local.neon
+        dbname: # in config.local.neon
+
+    gcm: # nastaveni Google Cloud Messaging
         apiKey:  # in config.local.neon
         senderId:  # in config.local.neon
+
+    google: # nastaveni Google API (pro Login)
+        clientId: # in config.local.neon
+        clientSecret: # in config.local.neon
+
     map:
         defaultPosition:
             lat: 49.2020701
@@ -45,11 +59,12 @@ extensions:
     google: Kdyby\Google\DI\GoogleExtension
 
 doctrine:
-    user:  # in config.local.neon
-    password:  # in config.local.neon
-    dbname:  # in config.local.neon
+    user: %database.user%
+    password:  %database.password%
+    dbname:  %database.dbname%
     metadata:
         App: %appDir%
+
 console:
     url: http://www.lostphone.cz
     commands:
@@ -57,8 +72,8 @@ console:
         - App\Commands\WebSocketServerCommand
 
 google:
-    clientId: # in config.local.neon
-    clientSecret: # in config.local.neon
+    clientId: %google.clientId%
+    clientSecret: %google.clientSecret%
     returnUri: 'Sign:in'(do=googleLogin-response)
 
 nette:
@@ -75,8 +90,11 @@ services:
 	- App\Services\ImageService(%images.uploadDir%,%images.cacheDir%,%images.sizes%,%images.cacheUrl%)
 	- App\Services\MessageService
 
-	- Gcm\Http\Sender(%google.apiKey%)
-	- Gcm\Xmpp\Daemon(%google.senderId%, %google.apiKey%)
+	- \Hoa\Socket\Client(%websockets.serverUrl%)
+	- \Hoa\Socket\Server(%websockets.serverUrl%)
+
+	- Gcm\Http\Sender(%gcm.apiKey%)
+	- Gcm\Xmpp\Daemon(%gcm.senderId%, %gcm.apiKey%)
 
 	- App\RouterFactory
 	router: @App\RouterFactory::createRouter

@@ -50,7 +50,7 @@ class DaemonCommand extends \Symfony\Component\Console\Command\Command {
 
 
 
-    public function __construct(Daemon $gcm, EntityManager $em, MessageService $messageService)
+    public function __construct(Daemon $gcm, EntityManager $em, MessageService $messageService, \Hoa\Socket\Client $client)
     {
         parent::__construct();
 
@@ -58,7 +58,7 @@ class DaemonCommand extends \Symfony\Component\Console\Command\Command {
         $this->em = $em;
         $this->messageService = $messageService;
 
-        $this->websocket = new Client( new \Hoa\Socket\Client('tcp://127.0.0.1:8889') );
+        $this->websocket = new Client( $client );
         $this->websocket->setHost( "www.lostphone.cz" );
     }
 
