@@ -27,7 +27,7 @@
 	<script src="{$basePath}/js/nette.ajax.js"></script>
 	<script src="{$basePath}/js/jquery.growl.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key={$config->google->apiKey}"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key={$config->gcm->apiKey}"></script>
 
 	<script src="{$basePath}/js/main.js" type="text/javascript"></script>
 	{/block}
@@ -41,7 +41,9 @@
       <div class="container">
 
         <div class="navbar-header">
-            <a class="navbar-brand" href="{link Homepage:}">LostPhone</a>
+            <a class="navbar-brand" href="{link Homepage:}">
+                <img src="/images/logo50_white.png" alt="LostPhone" style="margin-top: -15px;" />
+            </a>
         </div>
 
 

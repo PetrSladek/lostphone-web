@@ -147,6 +147,7 @@ class HomepagePresenter extends BasePresenter
             'locked' => $this->device->isLocked()
         ] : null;
 
+
     }
 
 
@@ -238,7 +239,7 @@ class HomepagePresenter extends BasePresenter
 
         $cmd->setDisplayText(null);
         $cmd->setOwnerPhoneNumber("+420000000000");
-        $cmd->setPassword( Random::generate(8) );
+        $cmd->setPassword( Random::generate(16) );
 
         $this->sendCommand($cmd);
 

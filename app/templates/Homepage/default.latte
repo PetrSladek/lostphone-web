@@ -15,50 +15,13 @@
 
 
 <div style="position: absolute; z-index: 100; top: 100px; left: 100px; width: 250px;">
-    {*<div class="panel panel-primary">*}
-        {*<div class="panel-heading">*}
-            {*Příkazy*}
-        {*</div>*}
-        {*<div class="panel-body" n:snippet="command-buttons">*}
-            <a n:href="ping!" class="ajax btn btn-default btn-block">Ping</a>
-            <a n:href="ring!" class="ajax btn btn-default btn-block btn-lg"><i class="fa fa-mobile-phone"></i> Prozvonit</a>
-            <a n:href="lock!" class="ajax btn btn-default btn-block btn-lg"><i class="fa fa-lock"></i> Uzamknout</a>
-            <a n:href="locate!" class="ajax btn btn-default btn-block btn-lg"><i class="fa fa-globe"></i> Lokalizovat</a>
 
-            <br /><br />
-        {*</div>*}
-    {*</div>*}
-    {*<div class="panel panel-default">
-        <div class="panel-heading">
-            Příkazy
-        </div>
-        <div class="panel-body" n:snippet="commands">
-            <div n:foreach="$commands as $command" n:class="$command->isAcked() ? bg-success">
-            {if $command->isType($command::TYPE_PING)}
-                <small>{$command->dateSent->format('j.n.Y H:i:s')}</small><br />
-                Ping!
-            {elseif $command->isType($command::TYPE_RING)}
-                <small>{$command->dateSent->format('j.n.Y H:i:s')}</small><br />
-                Prozvonit
-            {elseif $command->isType($command::TYPE_LOCATE)}
-                <small>{$command->dateSent->format('j.n.Y H:i:s')}</small><br />
-                Lokalizovat
-            {elseif $command->isType($command::TYPE_LOCK)}
-                <small>{$command->dateSent->format('j.n.Y H:i:s')}</small><br />
-                Zamknout
-            {elseif $command->isType($command::TYPE_GETLOG)}
-                <small>{$command->dateSent->format('j.n.Y H:i:s')}</small><br />
-                Výpis volání/SMS
-            {elseif $command->isType($command::TYPE_ENCRYPTSTORAGE)}
-                <small>{$command->dateSent->format('j.n.Y H:i:s')}</small><br />
-                Zašifrovat data
-            {elseif $command->isType($command::TYPE_WIPEDATA)}
-                <small>{$command->dateSent->format('j.n.Y H:i:s')}</small><br />
-                Tovární nastavení
-            {/if}
-            </div>
-        </div>
-    </div>*}
+    <a n:href="ping!" class="ajax btn btn-default btn-block">Ping</a>
+    <a n:href="ring!" class="ajax btn btn-default btn-block btn-lg"><i class="fa fa-mobile-phone"></i> Prozvonit</a>
+    <a n:href="lock!" class="ajax btn btn-default btn-block btn-lg"><i class="fa fa-lock"></i> Uzamknout</a>
+    <a n:href="locate!" class="ajax btn btn-default btn-block btn-lg"><i class="fa fa-globe"></i> Lokalizovat</a>
+
+    <br /><br />
 
     {snippet locked}
     <div n:if="$device" id="device-locked" n:class="panel,panel-danger, !$device->isLocked() ? hidden">
@@ -92,7 +55,7 @@
             </div>
         {/form}
 
-<div class="row">
+        <div class="row">
             <div class="col-md-12">
                 <br />
                 <br />
@@ -100,7 +63,7 @@
                 <a n:href="encryptStorage!" class="ajax btn btn-default btn-block">Zašifrovat data</a>
                 <a n:href="wipeData!" class="ajax btn btn-default btn-block">Tovární nastavení</a>
             </div>
-</div>
+        </div>
 
         </div>
     </div>
