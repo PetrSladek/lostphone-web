@@ -60,6 +60,9 @@ abstract class BasePresenter extends Presenter
         $this->me = $this->user->isLoggedIn() ? $this->em->getRepository(User::getClassName())->find( $this->user->getId() ) : null;
         $this->template->me = $this->me;
 
+
+        $this->template->debugMode = $this->config->debugMode;
+        $this->template->productionMode = $this->config->productionMode;
     }
 
     /**

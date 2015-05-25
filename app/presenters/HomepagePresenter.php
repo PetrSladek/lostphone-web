@@ -81,7 +81,7 @@ class HomepagePresenter extends BasePresenter
             $this->redirect('Sign:in');
         }
 
-        // Vytáhnu repozitíř se zařízeními
+        // Vytáhnu repozitář se zařízeními
         $this->devices = $this->em->getRepository(Device::getClassName());
 
 
@@ -171,6 +171,7 @@ class HomepagePresenter extends BasePresenter
         }
         // Předám lokaci do šablony
         $this->template->pos = $pos;
+
 
 
         // Předám lokaci a zařízení do ajaxového payloadu
