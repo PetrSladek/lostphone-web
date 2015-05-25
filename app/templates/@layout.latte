@@ -69,8 +69,10 @@
     </nav>
 
 
-	<div n:foreach="$flashes as $flash" class="flash {$flash->type}">{$flash->message}</div>
-
+	<div n:foreach="$flashes as $flash" class="alert alert-{$flash->type}" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Zavřít"><span aria-hidden="true">&times;</span></button>
+	    {$flash->message}
+    </div>
 
 
 	{include content}

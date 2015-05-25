@@ -66,9 +66,9 @@ doctrine:
         App: %appDir%
 
 console:
-    url: http://www.lostphone.cz
+    url: http://%domainUrl%
     commands:
-        - App\Commands\DaemonCommand
+        - App\Commands\DaemonCommand(%domainUrl%)
         - App\Commands\WebSocketServerCommand
 
 google:

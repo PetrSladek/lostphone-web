@@ -1,9 +1,9 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: Peggy
- * Date: 22.3.2015
- * Time: 13:50
+ * Příkaz z CLI pro spuštění GCM Daemona
+ *
+ * @package LostPhone
+ * @author Petr Sládek <xslade12@stud.fit.vutbr.cz>
  */
 
 namespace App\Commands;
@@ -28,29 +28,39 @@ use Tracy\Debugger;
 class DaemonCommand extends \Symfony\Component\Console\Command\Command {
 
     /**
+     * Doctrine manažer entit
      * @var EntityManager
      */
     private $em;
 
     /**
+     * Služba pro práci se zprávami
      * @var MessageService
      */
     private $messageService;
 
     /**
+     * GCM Daemon
      * @var Daemon
      */
     private $gcm;
 
 
     /**
+     * WebSocket klient
      * @var Client
      */
     private $websocket;
 
 
-
-    public function __construct(Daemon $gcm, EntityManager $em, MessageService $messageService, \Hoa\Socket\Client $client)
+    /**
+     * @param null|string $domainUrl
+     * @param Daemon $gcm
+     * @param EntityManager $em
+     * @param MessageService $messageService
+     * @param \Hoa\Socket\Client $client
+     */
+    public function __construct($domainUrl, Daemon $gcm, EntityManager $em, MessageService $messageService, \Hoa\Socket\Client $client)
     {
         parent::__construct();
 
@@ -59,10 +69,13 @@ class DaemonCommand extends \Symfony\Component\Console\Command\Command {
         $this->messageService = $messageService;
 
         $this->websocket = new Client( $client );
-        $this->websocket->setHost( "www.lostphone.cz" );
+        $this->websocket->setHost( $domainUrl );
     }
 
 
+    /**
+     * Konfigurace prikazu pro CLI
+     */
     protected function configure()
     {
         $this->setName('app:daemon')
@@ -70,29 +83,13 @@ class DaemonCommand extends \Symfony\Component\Console\Command\Command {
     }
 
 
-
+    /**
+     * Spusteni prikazu pro CLI
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-
-
-//        $connections = [];
-//
-//
-//        $this->server->on('open', function ( Bucket $bucket ) use ($output, $connections) {
-//
-//            echo 'new connection', "\n";
-//            $connections[] = $bucket;
-//
-//            return;
-//        });
-//        $this->server->on('close', function ( Bucket $bucket ) use ($output, $connections) {
-//
-//            echo 'connection closed', "\n";
-//            // find and delete
-////            $connections[] = $bucket;
-//
-//            return;
-//        });
 
 
         $this->gcm->onReady[] = function(Daemon $gcm) use($output) {
@@ -139,12 +136,14 @@ class DaemonCommand extends \Symfony\Component\Console\Command\Command {
             // Message
             $data = json_decode($data->message);
             try {
+                // Zpracuju zpravu a ulozim data do DB
                 $msg = $this->messageService->proccessRecievedData($device, $data);
                 $this->em->flush();
 
                 if ($output->isVerbose())
                     $output->writeln("[{$now->format('j.n.Y H:i:s')}] Reciever message {$msg->getClassName()} from {$device->getGcmId()}");
 
+                // Poslu pres WebSockets informaci o tom, že je k dispozici nova zprava
                 $this->websocket->connect();
                 $payload = json_encode([
                     'type' => 'newMessage',
@@ -162,8 +161,8 @@ class DaemonCommand extends \Symfony\Component\Console\Command\Command {
         };
 
 
+        // Spustim deamona. Ten bezi dokud neni ukoncen.
         $this->gcm->run();
-//        $this->server->run();
 
     }
 
