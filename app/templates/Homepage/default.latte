@@ -122,7 +122,7 @@
                 Pokus o odemčení!
                 <div n:if="$message->frontPhoto">
                     <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#modal-message-{$message->id}">Otevřít</button>
-                <div>
+                </div>
             </div>
         {elseif $message->isType($message::TYPE_LOCATION)}
             <div class="message-icon location">
