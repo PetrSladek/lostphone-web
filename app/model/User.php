@@ -1,9 +1,9 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: Peggy
- * Date: 3.3.2015
- * Time: 22:21
+ * Uživatel webové aplikace
+ *
+ * @package LostPhone
+ * @author Petr Sládek <xslade12@stud.fit.vutbr.cz>
  */
 
 namespace App\Model;
@@ -18,29 +18,28 @@ use Kdyby\Doctrine\Entities\BaseEntity;
 use Nette\Security\Identity;
 
 /**
- * Class User
- * @package app\model
- *
  * @Entity
  */
 class User extends BaseEntity {
 
     use Identifier;
 
-
     /**
+     * Jméno uživatle
      * @Column(type="string")
      * @var string
      */
     protected $name;
 
     /**
+     * Google Account Email
      * @Column(type="string")
      * @var string
      */
     protected $googleEmail;
 
     /**
+     * Uživatelovi zařízení
      * @OneToMany(targetEntity="Device", mappedBy="owner")
      * @var Collection
      */
@@ -53,15 +52,24 @@ class User extends BaseEntity {
     }
 
 
+    /**
+     * Přidat zařízení
+     * @param Device $device
+     */
     public function addDevice(Device $device) {
         $this->devices->add($device);
     }
+
+    /**
+     * Odebrat zařízení
+     * @param Device $device
+     */
     public function removeDevice(Device $device) {
         $this->devices->remove($device);
     }
 
     /**
-     * Vrati prvni (defoultni zarizeni)
+     * Vrati prvni (defaultni zarizeni)
      * @return Device|null
      */
     public function getFirstDevice() {
@@ -69,6 +77,7 @@ class User extends BaseEntity {
     }
 
     /**
+     * Vratí všechny zařízení uživatele
      * @return Collection
      */
     public function getDevices()
@@ -114,6 +123,7 @@ class User extends BaseEntity {
 
 
     /**
+     * Převede uživatele na Nette Identitu pro přímé přihlášení
      * @return Identity
      */
     public function toIdentity() {

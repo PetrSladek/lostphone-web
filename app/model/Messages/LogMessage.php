@@ -1,10 +1,11 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: Peggy
- * Date: 28.2.2015
- * Time: 11:50
+ * Zpráva ze zařízení s výpisem volání a SMS.
+ *
+ * @package LostPhone
+ * @author Petr Sládek <xslade12@stud.fit.vutbr.cz>
  */
+
 
 namespace App\Model\Messages;
 
@@ -14,19 +15,19 @@ use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 
 /**
- * Class LocationMessage
- * @package App\Model
  * @Entity
  */
 class LogMessage extends Message {
 
     /**
+     * Výpis volání
      * @Column(type="json_array", nullable=true)
      * @var array
      */
     protected $callLog;
 
     /**
+     * Výpis posledních SMS
      * @Column(type="json_array", nullable=true)
      * @var array
      */
@@ -78,6 +79,7 @@ class LogMessage extends Message {
 
 
     /**
+     * Deserialuzuje výpis volání
      * @param string $input
      * @return array
      */
@@ -86,6 +88,7 @@ class LogMessage extends Message {
         return self::parseLog($headers, $input);
     }
     /**
+     * Deserialuzuje výpis SMS
      * @param string $input
      * @return array
      */
@@ -94,6 +97,14 @@ class LogMessage extends Message {
         return self::parseLog($headers, $input);
     }
 
+    /**
+     * Deserialuzuje výpis volání/sms
+     * @param array $headers Pole hlaviček
+     * @param string $rows Data
+     * @param string $delimiterRows Oddelovac řádků
+     * @param string $delimiterCells Oddelovač sloupců
+     * @return array
+     */
     protected static function parseLog($headers, $rows, $delimiterRows = "\n", $delimiterCells = "|") {
         $rows = trim((string) $rows);
         if(empty($rows))

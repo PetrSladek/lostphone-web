@@ -1,10 +1,11 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: Peggy
- * Date: 20.2.2015
- * Time: 15:21
+ * Abstraktní Entita příkazu pro zařízení
+ *
+ * @package LostPhone
+ * @author Petr Sládek <xslade12@stud.fit.vutbr.cz>
  */
+
 
 namespace App\Model\Commands;
 
@@ -45,24 +46,28 @@ abstract class Command extends BaseEntity {
     const TYPE_WIPEDATA         = 0x0006;
 
     /**
+     * Datum odeslání
      * @Column(type="datetime", nullable=true)
      * @var DateTime|null Data sent
      */
     protected $dateSent;
 
     /**
+     * Datum potvrzení přijetí
      * @Column(type="datetime", nullable=true)
      * @var DateTime|null Date Acknowlage
      */
     protected $dateAck;
 
     /**
+     * Datum kdy bylo potvrzení zobrazeno uživateli
      * @Column(type="datetime", nullable=true)
      * @var DateTime|null Date when user view Acknowlage
      */
     protected $dateViewAck;
 
     /**
+     * Zařízení na které byl příkaz odeslán
      * @ManyToOne(targetEntity="App\Model\Device", inversedBy="commands")
      * @var Device
      */
@@ -114,6 +119,7 @@ abstract class Command extends BaseEntity {
 
 
     /**
+     * Je potvrzeno, že příkaz dorazil?
      * @return bool
      */
     public function isAcked() {

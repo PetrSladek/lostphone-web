@@ -1,9 +1,9 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: Peggy
- * Date: 6.11.14
- * Time: 8:56
+ * Databázová Entita obrázku.
+ *
+ * @package LostPhone
+ * @author Petr Sládek <xslade12@stud.fit.vutbr.cz>
  */
 
 namespace App\Model;
@@ -22,11 +22,13 @@ class Image extends BaseEntity {
     use Identifier;
 
     /**
+     * Název souboru s obrázkem
      * @Column(type="string")
      */
     protected $filename;
 
     /**
+     * Přípona
      * @Column(type="string")
      */
     protected $extension;

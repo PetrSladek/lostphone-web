@@ -1,9 +1,9 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: Peggy
- * Date: 3.3.2015
- * Time: 20:47
+ * Abstraktní zpráva ze zařízení (předek ostatních zpráv)
+ *
+ * @package LostPhone
+ * @author Petr Sládek <xslade12@stud.fit.vutbr.cz>
  */
 
 namespace App\Model\Messages;
@@ -34,26 +34,28 @@ use Kdyby\Doctrine\Entities\BaseEntity;
  */
 abstract class Message extends BaseEntity {
 
-    use \Kdyby\Doctrine\Entities\Attributes\Identifier; // Using Identifier trait for id col
+    use \Kdyby\Doctrine\Entities\Attributes\Identifier; // Identifikační etita (ma ID)
 
     const TYPE_PONG              = 0x0000; // odpoved na PING, pouze testovaci
-    const TYPE_REGISTRATION      = 0x0001;
-    const TYPE_GOTCHA            = 0x0002;
-    const TYPE_RINGINGTIMEOUT    = 0x0003;
-    const TYPE_UNLOCK            = 0x0004;
-    const TYPE_WRONGPASS         = 0x0005;
-    const TYPE_LOCATION          = 0x0006;
-    const TYPE_SIMSTATECHANGED   = 0x0007;
-    const TYPE_LOG               = 0x0008;
+    const TYPE_REGISTRATION      = 0x0001; // registrace noveho zařízení
+    const TYPE_GOTCHA            = 0x0002; // Mám tě
+    const TYPE_RINGINGTIMEOUT    = 0x0003; // Prozvánení vypršelo
+    const TYPE_UNLOCK            = 0x0004; // Zařízení odemknuto
+    const TYPE_WRONGPASS         = 0x0005; // Pokus o odemčení
+    const TYPE_LOCATION          = 0x0006; // Poloha zařízení
+    const TYPE_SIMSTATECHANGED   = 0x0007; // Změna stavu SIM karty
+    const TYPE_LOG               = 0x0008; // Výpisy volnání a SMS
 
 
     /**
+     * Datum odeslání zprávy
      * @Column(type="datetime", nullable=true)
-     * @var DateTime|null Data sent
+     * @var DateTime|null
      */
     protected $dateSent;
 
     /**
+     * Zařízení ze kterého byla odeslána
      * @ManyToOne(targetEntity="App\Model\Device", inversedBy="messages")
      * @var Device
      */
@@ -65,6 +67,11 @@ abstract class Message extends BaseEntity {
     public abstract function getType();
 
 
+    /**
+     * Je zpráva zadaného typu?
+     * @param int $type
+     * @return bool
+     */
     public function isType($type) {
         return $this->getType() === $type;
     }

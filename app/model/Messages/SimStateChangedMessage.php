@@ -1,9 +1,9 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: Peggy
- * Date: 28.2.2015
- * Time: 11:50
+ * Zpráva ze zařízení se aktuálním stavem SIM karty
+ *
+ * @package LostPhone
+ * @author Petr Sládek <xslade12@stud.fit.vutbr.cz>
  */
 
 namespace App\Model\Messages;
@@ -12,8 +12,6 @@ use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 
 /**
- * Class RegistrationMessage
- * @package App\Model
  * @Entity
  */
 class SimStateChangedMessage extends Message {
@@ -27,64 +25,88 @@ class SimStateChangedMessage extends Message {
     }
 
     /**
+     * IMEI
+     * International Mobile Equipment Identity. Jde o unikátní číslo přidělené výrobcem mobilnímu telefonu.
+     *
      * @Column(type="string", nullable=true)
      * @var string
      */
     protected $imei;
 
     /**
+     * IMSI
+     * International Mobile Subscriber Identity. Jde o unikátní číslo přidělené mobilním operátorem pro SIM kartu v mobilní síti GSM nebo UMTS. Může být použito v dalších sítích jako např. CDMA.
+     *
      * @Column(type="string", nullable=true)
      * @var string
      */
     protected $subscriberId;
 
     /**
+     * MSISDN
+     * Mobile Subscriber ISDN Number je celosvětově jednoznačné číslo, které identifikuje účastníka ve veřejné telefonní síti
+     *
      * @Column(type="string", nullable=true)
      * @var string
      */
     protected $phoneNumber;
 
     /**
+     * Operátor přihlášené sítě
+     *
      * @Column(type="string", nullable=true)
      * @var string
      */
     protected $networkOperator;
 
     /**
+     * Název operátora přihlášené sítě
+     *
      * @Column(type="string", nullable=true)
      * @var string
      */
     protected $networkOperatorName;
 
     /**
+     * ISO kód Země operátora přihlášené sítě
+     *
      * @Column(type="string", nullable=true)
      * @var string
      */
     protected $networkCountryIso;
 
     /**
+     * Operátor sítě vyddavajici SIM kartu
+     *
      * @Column(type="string", nullable=true)
      * @var string
      */
     protected $simOperator;
 
     /**
+     * Název operátora sítě vyddavajici SIM kartu
+     *
      * @Column(type="string", nullable=true)
      * @var string
      */
     protected $simOperatorName;
 
     /**
+     * Seriové číslo SIM karty
+     *
+     * @Column(type="string", nullable=true)
+     * @var string
+     */
+    protected $simSerialNumber;
+
+    /**
+     * IISO kód Země operátora vydávající SIM kartu
+     *
      * @Column(type="string", nullable=true)
      * @var string
      */
     protected $simCountryIso;
 
-    /**
-     * @Column(type="string", nullable=true)
-     * @var string
-     */
-    protected $simSerialNumber;
 
 
 

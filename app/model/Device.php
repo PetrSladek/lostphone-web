@@ -1,9 +1,9 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: Peggy
- * Date: 3.3.2015
- * Time: 22:21
+ * Entita definující zařízení
+ *
+ * @package LostPhone
+ * @author Petr Sládek <xslade12@stud.fit.vutbr.cz>
  */
 
 namespace App\Model;
@@ -30,27 +30,31 @@ use Nette;
  */
 class Device extends BaseEntity {
 
-    use Identifier;
+    use Identifier; // Entita s ID
 
     /**
+     * Unikatní idetifikátor zaříázení
      * @Column(type="string")
      * @var string
      */
     protected $identifier;
 
     /**
+     * Přidelení GCM id
      * @Column(type="string")
      * @var string
      */
     protected $gcmId;
 
     /**
+     * Název zařízení
      * @Column(type="string")
      * @var string
      */
     protected $name;
 
     /**
+     * Je zařízení aktuálně uzamknuté?
      * @Column(type="boolean")
      * @var boolean
      */
@@ -58,18 +62,21 @@ class Device extends BaseEntity {
 
 
     /**
+     * Uživatel kterému toto zařízení patří
      * @ManyToOne(targetEntity="User", inversedBy="devices")
      * @var User
      */
     protected $owner;
 
     /**
+     * Registrační zpráva, kterou bylo zařízení přidáno
      * @OneToOne(targetEntity="App\Model\Messages\RegistrationMessage")
      * @var RegistrationMessage
      */
     protected $registrationMessage;
 
     /**
+     * Příkazy, které byli na toto zařízení odeslány
      * @OneToMany(targetEntity="App\Model\Commands\Command", mappedBy="device")
      * @var Collection
      */
@@ -77,6 +84,7 @@ class Device extends BaseEntity {
 
 
     /**
+     * Zprávy které z tohoto zařízení odešli
      * @OneToMany(targetEntity="App\Model\Messages\Message", mappedBy="device")
      * @var Collection
      */
@@ -85,6 +93,7 @@ class Device extends BaseEntity {
 
     public function __construct()
     {
+        // Aby při založení entity přes konstructor byli inicializovány prázdné kolekce
         $this->messages = new ArrayCollection();
         $this->commands = new ArrayCollection();
     }

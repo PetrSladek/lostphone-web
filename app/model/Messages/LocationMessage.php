@@ -1,10 +1,11 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: Peggy
- * Date: 28.2.2015
- * Time: 11:50
+ * Zpráva ze zařízení o zjištění polohy.
+ *
+ * @package LostPhone
+ * @author Petr Sládek <xslade12@stud.fit.vutbr.cz>
  */
+
 
 namespace App\Model\Messages;
 
@@ -14,19 +15,19 @@ use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 
 /**
- * Class LocationMessage
- * @package App\Model
  * @Entity
  */
 class LocationMessage extends Message {
 
     /**
+     * Zeměpisná šířka
      * @Column(type="decimal", precision=8, scale=6)
      * @var float
      */
     protected $lat;
 
     /**
+     * Zeměpisná délka
      * @Column(type="decimal", precision=8, scale=6)
      * @var float
      */

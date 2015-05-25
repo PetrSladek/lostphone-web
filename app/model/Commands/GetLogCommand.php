@@ -1,9 +1,9 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: Peggy
- * Date: 28.2.2015
- * Time: 11:50
+ * Příkaz do zařízení k získání výpisu SMS a volání.
+ *
+ * @package LostPhone
+ * @author Petr Sládek <xslade12@stud.fit.vutbr.cz>
  */
 
 namespace App\Model\Commands;
@@ -13,8 +13,6 @@ use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 
 /**
- * Class GetLogCommand
- * @package App\Model
  * @Entity
  */
 class GetLogCommand extends Command {

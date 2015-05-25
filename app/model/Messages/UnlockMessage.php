@@ -1,9 +1,9 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: Peggy
- * Date: 28.2.2015
- * Time: 11:50
+ * Zpráva ze zařízení o tom, že někdo úspěšně odemknul zařízení.
+ *
+ * @package LostPhone
+ * @author Petr Sládek <xslade12@stud.fit.vutbr.cz>
  */
 
 namespace App\Model\Messages;
@@ -13,8 +13,6 @@ use App\Model\Commands\Command;
 use Doctrine\ORM\Mapping\Entity;
 
 /**
- * Class UnlockMessage
- * @package App\Model
  * @Entity
  */
 class UnlockMessage extends Message {
