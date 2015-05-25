@@ -1,4 +1,11 @@
 <?php
+/**
+ * Služba pro práci s obrázky
+ *
+ * @package LostPhone
+ * @author Petr Sládek <xslade12@stud.fit.vutbr.cz>
+ */
+
 namespace App\Services;
 
 use Nette\Http\FileUpload;
@@ -7,9 +14,6 @@ use Nette\Object;
 use Nette\Utils\Image;
 use Nette\Utils\Strings;
 
-/**
- * Class ImageService
- */
 class ImageService extends Object
 {
 
@@ -23,20 +27,22 @@ class ImageService extends Object
 	protected $cacheUrl;
 
 	/**
-	 * @param string $uploadPath
-	 * @param string $cachePath
-	 * @param array $imageSizes
-	 * @param string $cacheUrl
+	 * @param string $uploadPath Adresář pro nahrání originálů
+	 * @param string $cachePath Adresář pro cachování zmenšenin (musí být do stupné z webu)
+	 * @param array $imageSizes Pole s předdefinvoanými zmenšeninami
+	 * @param string $cacheUrl URL adresa na složku s cachemi
 	 */
 	public function __construct($uploadPath, $cachePath, $imageSizes, $cacheUrl) {
+        // Přidá lomítka na konec všech složek a url adres
 		$this->uploadPath = rtrim($uploadPath,"/")."/";
 		$this->cachePath = rtrim($cachePath,"/")."/";
 		$this->imageSizes = $imageSizes;
-
         $this->cacheUrl = rtrim($cacheUrl,"/")."/";
 	}
 
 	/**
+     * Vrátí cestu ke zmenšenině
+     *
 	 * @param int $id
 	 * @param string $filename
 	 * @param string $type
@@ -47,6 +53,8 @@ class ImageService extends Object
 }
 
 	/**
+     * Vrátí URL ke zmenšenině
+     *
 	 * @param int $id
 	 * @param string $filename
 	 * @param string $type
@@ -57,7 +65,8 @@ class ImageService extends Object
 	}
 
 	/**
-     * Vygeneruje miniaturu a vrati nazev vytvoreneho souboru
+     * Vygeneruje miniaturu (pokud neexistuje) a vrati nazev vytvoreneho souboru
+     *
 	 * @param int $id
 	 * @param string $filename
 	 * @param string $type
@@ -69,9 +78,10 @@ class ImageService extends Object
 			throw new InvalidArgumentException("Neznámý typ obrázku (Není nastaven v configu) [$type]");
 		}
 		$params = $this->imageSizes[$type];
+        // Zjistime název souboru pro zmenšeninu
 		$thumbnail = $this->getCachePath($id, $filename, $params["width"], $params["height"], $params["flag"]);
 
-
+        // Pokud zmenšenina ještě neexistuje, vygenerujeme ji z originálu
 		if(!file_exists($this->cachePath . $thumbnail)) {
 			$this->generate($id, $filename, $params["width"], $params["height"], $params["flag"]);
 		}
@@ -80,6 +90,7 @@ class ImageService extends Object
 	}
 
 	/**
+     * Vygeneruje zmenšeninu z originálu
 	 * @param $id
 	 * @param $filename
 	 * @param $width
@@ -119,13 +130,14 @@ class ImageService extends Object
 		}
 
 		$thumbnail = $this->getCachePath($id, $filename, $width, $height, $flag);
-		list($d1, $d2) = explode('/', $thumbnail);
-		@mkdir( $this->cachePath . implode("/",array($d1, $d2)) . "/" , 0777, true);
+		list($dir1, $dir2) = explode('/', $thumbnail);
+		@mkdir( $this->cachePath . implode("/",array($dir1, $dir2)) . "/" , 0777, true);
 
 		$image->save($this->cachePath . $thumbnail);
 	}
 
 	/**
+     * Vrátí relativní cestu ke zmenšenině
 	 * @param int $id
 	 * @param string $filename
 	 * @param int|null $width
@@ -139,6 +151,7 @@ class ImageService extends Object
 	}
 
 	/**
+     * Vrátí název souboru pro zmenšeninu
 	 * @param int $id
 	 * @param string $filename
 	 * @param int|null $width
@@ -157,10 +170,11 @@ class ImageService extends Object
 	}
 
 	/**
+     * Vrátí příponu z názvu souboru
 	 * @param $filename
 	 * @return string
 	 */
-	protected function getExtension($filename) {
+	protected static function getExtension($filename) {
 		$name_parts = explode(".",$filename);
 		return end($name_parts);
 	}

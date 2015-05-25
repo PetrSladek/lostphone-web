@@ -1,4 +1,11 @@
 <?php
+/**
+ * Presenter, který volá mobilní aplikace při zasílání zpráv a ACK přes HTTP
+ *
+ * @package LostPhone
+ * @author Petr Sládek <xslade12@stud.fit.vutbr.cz>
+ */
+
 
 namespace App\Presenters;
 
@@ -34,48 +41,56 @@ use Tracy\Debugger;
 class ApiPresenter extends BasePresenter
 {
 
-    /** @var EntityManager
-     * @inject
+    /**
+     * Doctrine Entity manažer
+     * @var EntityManager
+     * @inject Připojí se sám z DI kontejneru
      */
     public $em;
 
     /**
+     * Služba pro práci se zprávami
      * @var MessageService
-     * @inject
+     * @inject Připojí se sám z DI kontejneru
      */
     public $messageService;
 
 
     /**
+     * Data získaná z HTTP requestu
      * @var ArrayHash
      */
     public $input;
 
     /**
-     * @var int GCM ID zareizemi od ktereho prisel event
+     * GCM ID zareizeni od ktereho přišla zpráva
+     * @var int
      */
     public $gcmId;
 
     /**
-     * @var Device|null nalezene zarizeni podle GCM ID
+     * Nalezené zařízení podle GCM ID
+     * @var Device|null
      */
     public $device;
 
 
-
-    protected function getJsonBody() {
-        return (array) json_decode(file_get_contents("php://input"));
-    }
-
+    /**
+     * Metoda, která se spouští na začátku životního cyklu HTTP requestu
+     */
     protected function startup()
     {
         parent::startup();
 
+        // z HTTP hlavicky zjistí GCM ID zařízení
         $gcmId = $this->getHttpRequest()->getHeader('device');
+
         Debugger::log($gcmId);
+
         // nacte Zarizeni z DB podle gcmId
         $this->device = $this->em->getRepository(Device::getClassName())->findOneBy(['gcmId'=>$gcmId]);
 
+        // Spojí data z body, postu a souborů
         $data = array_merge(
             $this->getJsonBody(),
             $this->getHttpRequest()->getPost(),
@@ -83,14 +98,29 @@ class ApiPresenter extends BasePresenter
         );
 
         Debugger::log(print_r($data, true));
+
         $this->input = ArrayHash::from($data);
     }
 
-    public function actionDefault() {
+    /**
+     * Vrátí body HTTP požadavku, jako pole
+     * @return array rozkodovaný JSON z body HTTP požadavku
+     */
+    protected function getJsonBody() {
+        return (array) json_decode(file_get_contents("php://input"));
+    }
 
+
+    /**
+     * /api/ vrati jen ERR
+     */
+    public function actionDefault() {
         $this->sendResponse(new TextResponse("ERR"));
     }
 
+    /**
+     * /api/messages zpracuje prichozi zprávy a vrati chybový kod 0 (vse OK)
+     */
     public function actionMessages() {
 
         $this->messageService->proccessRecievedData($this->device, $this->input);
@@ -100,6 +130,9 @@ class ApiPresenter extends BasePresenter
     }
 
 
+    /**
+     * /api/ack/<commandId> zpracuje prichozi ACK a vrati chybový kod 0 (vse OK)
+     */
     public function actionAck($id) {
 
         $this->messageService->ackCommand($id, $this->input->date, $this->device);

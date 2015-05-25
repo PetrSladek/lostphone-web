@@ -1,4 +1,10 @@
 <?php
+/**
+ * Presenter hlavní obrazovky po přihlášení (Mapa, příkazy atd..)
+ *
+ * @package LostPhone
+ * @author Petr Sládek <xslade12@stud.fit.vutbr.cz>
+ */
 
 namespace App\Presenters;
 
@@ -25,32 +31,47 @@ use Nette\Utils\Random;
 use Nette\Utils\Strings;
 
 
-/**
- * Homepage presenter.
- */
 class HomepagePresenter extends BasePresenter
 {
 
-    /** @var EntityManager @inject */
+    /**
+     * Doctrine Entity manažer
+     * @var EntityManager
+     * @inject Pripojí se sám DI contejneru
+     */
     public $em;
 
-    /** @var Sender @inject */
+    /**
+     * GCM Sender pro posilani zprav pres HTTP
+     * @var Sender
+     * @inject Pripojí se sám DI contejneru
+     */
     public $gcm;
 
 
-    /** @var int @persistent */
+    /**
+     * ID zařízení
+     * @var int
+     * @persistent Prenasi se sám v URL adrese
+     */
     public $deviceId = null;
 
     /**
-     * @var Device Selected device
+     * Entita vybraného zaříázení
+     * @var Device
      */
     protected $device;
 
     /**
+     * Repozitář se zařízeními
      * @var EntityRepository
      */
     protected $devices;
 
+
+    /**
+     * Metoda, která se spouští na začátku životního cyklu HTTP requestu
+     */
     protected function startup()
     {
         parent::startup();
@@ -60,23 +81,27 @@ class HomepagePresenter extends BasePresenter
             $this->redirect('Sign:in');
         }
 
+        // Vytáhnu repozitíř se zařízeními
         $this->devices = $this->em->getRepository(Device::getClassName());
 
 
+        // Pokud je zadané ID zařízení pokusím se ho nalézt V DB
         if($this->deviceId) {
             $this->device = $this->devices->find($this->deviceId);
-            if($this->device->getOwner() !== $this->me)
-                $this->error("Toto zarizeni neni vase", IResponse::S403_FORBIDDEN);
+            if($this->device->getOwner() !== $this->me) // Ověřím jestli je moje
+                $this->error("Toto zarizeni neni vase", IResponse::S403_FORBIDDEN); // Pokud ne, vrátím chybu
         }
 
-        if(!$this->device)
+        if(!$this->device) // Pokud není zařízení definované vytáhnu první zařízení uživatele
             $this->device = $this->me->getFirstDevice();
 
+        // Předám zařízení do šablony
         $this->template->device = $this->device;
     }
 
 
     /**
+     * Továrnička na formulář pro změnu zařízení
      * @return Form
      */
     protected function createComponentFrmChangeDevice()
@@ -97,6 +122,7 @@ class HomepagePresenter extends BasePresenter
     }
 
     /**
+     * Call back po odeslání předchozího formuláře
      * @param Form $form
      */
     public function frmChangeDeviceSucceeded(Form $form)
@@ -106,8 +132,12 @@ class HomepagePresenter extends BasePresenter
     }
 
 
+    /**
+     * Vykreslení výchozí stránky
+     */
     public function renderDefault() {
 
+        // Pokud mám zařízení načtu poslední zprávy a příkazy
         if($this->device) {
             $repo = $this->em->getRepository(Message::getClassName());
             $messages = $repo->findBy(['device' => $this->device], ['dateSent' => 'desc'], 10);
@@ -118,6 +148,7 @@ class HomepagePresenter extends BasePresenter
             $this->template->commands = $commands;
         }
 
+        // Zjistim poslední lokaci zažízení
         $lastLocalization = false;
         if($this->device) {
             $repo = $this->em->getRepository(LocationMessage::getClassName());
@@ -131,16 +162,18 @@ class HomepagePresenter extends BasePresenter
                 $pos->find = $lastLocalization->getDateSent()->format('j.n.Y H:i:s');
             }
         }
-
+        // Pokud nemám lokaci, vytáhnu defaultní z configu
         if(!$lastLocalization) {
             $pos->lat = (float) $this->config->map->defaultPosition->lat;
             $pos->lng = (float) $this->config->map->defaultPosition->lng;
             $pos->zoom = (int) $this->config->map->defaultPosition->zoom;
             $pos->find = false;
         }
+        // Předám lokaci do šablony
         $this->template->pos = $pos;
 
 
+        // Předám lokaci a zařízení do ajaxového payloadu
         $this->payload->position = $pos;
         $this->payload->device = $this->device ? [
             'name' => $this->device->getName(),
@@ -152,6 +185,7 @@ class HomepagePresenter extends BasePresenter
 
 
     /**
+     * Továrnička na formulář uzamknutí zařízení
      * @return Form
      */
     protected function createComponentFrmLock()
@@ -174,6 +208,7 @@ class HomepagePresenter extends BasePresenter
 
 
     /**
+     * Callback po odeslání předchozího formuláře
      * @param Form $form
      */
     public function frmLockSucceeded(Form $form)
@@ -196,11 +231,18 @@ class HomepagePresenter extends BasePresenter
     }
 
 
+    /**
+     * Akce obnovení dat (volaná ajaxem po čase, nebo po oznámení přes websockets)
+     */
     public function handleRefresh() {
-//        sleep(1); // second
 
+        // Repozitář s příkazy
         $repo = $this->em->getRepository(Command::getClassName());
+
+        //Poslední ACK, které ještě užřivatel neviděl
         $ackeds = $repo->findBy(['device' => $this->device, 'dateAck !='=>null, 'dateViewAck'=>null], ['dateSent' => 'desc']);
+
+        // tyto ACK přidám do AJAX payloadu a označním je v DB jako již zobrazené
         $now = new DateTime();
         foreach($ackeds as $ack) {
             $this->payload->ackeds[] = $this->commandToPayload($ack);
@@ -208,80 +250,117 @@ class HomepagePresenter extends BasePresenter
         }
         $this->em->flush();
 
+        // Překreslím snippet se zprávami (tím se přidá do ajax payloadu)
         $this->redrawControl('messages');
 
+        // Pokud není ajax přesměruju na sebe
         !$this->isAjax() ?  $this->redirect('this') : null;
     }
 
-
+    /**
+     * Akce Ping! (Pošle příkaz Ping do zařízení)
+     */
     public function handlePing()
     {
         $cmd = new PingCommand();
-        $this->sendCommand($cmd);
 
-        $this->payload->command = $this->commandToPayload($cmd);
-        $this->isAjax() ? $this->redrawControl() : $this->redirect('this');
+        // Posle příkaz do zařízení a do webového prohlížeče
+        $this->processHandleCommand($cmd);
     }
 
+    /**
+     * Akce Ring! (Pošle příkaz Ring do zařízení)
+     */
     public function handleRing()
     {
         $cmd = new RingCommand();
-        $cmd->setCloseAfter(20000);
-        $this->sendCommand($cmd);
+        $cmd->setCloseAfter(60*1000); // Vzpnout po 60s
 
-        $this->payload->command = $this->commandToPayload($cmd);
-        $this->isAjax() ? $this->redrawControl() : $this->redirect('this');
+        // Posle příkaz do zařízení a do webového prohlížeče
+        $this->processHandleCommand($cmd);
     }
 
+    /**
+     * Akce Lock! (Pošle příkaz Lock do zařízení)
+     */
     public function handleLock()
     {
         $cmd = new LockCommand();
 
-        $cmd->setDisplayText(null);
-        $cmd->setOwnerPhoneNumber("+420000000000");
-        $cmd->setPassword( Random::generate(16) );
+        $cmd->setDisplayText(null); // na displej nic
+        $cmd->setOwnerPhoneNumber("+420000000000"); // telefoní číslo zatím žádný
+        $cmd->setPassword( Random::generate(16) ); // heslo vyhenegujeme zatím náhodné
 
-        $this->sendCommand($cmd);
-
-        $this->isAjax() ? $this->redrawControl() : $this->redirect('this');
+        // Posle příkaz do zařízení a do webového prohlížeče
+        $this->processHandleCommand($cmd);
     }
 
+    /**
+     * Akce Locate! (Pošle příkaz Locate do zařízení)
+     */
     public function handleLocate()
     {
         $cmd = new LocateCommand();
-        $this->sendCommand($cmd);
 
-        $this->payload->command = $this->commandToPayload($cmd);
-        $this->isAjax() ? $this->redrawControl() : $this->redirect('this');
+        // Posle příkaz do zařízení a do webového prohlížeče
+        $this->processHandleCommand($cmd);
     }
 
+    /**
+     * Akce GetLog! (Pošle příkaz GetLog do zařízení)
+     */
     public function handleGetLog()
     {
         $cmd = new GetLogCommand();
-        $this->sendCommand($cmd);
 
-        $this->payload->command = $this->commandToPayload($cmd);
-        $this->isAjax() ? $this->redrawControl() : $this->redirect('this');
+        // Posle příkaz do zařízení a do webového prohlížeče
+        $this->processHandleCommand($cmd);
     }
 
+    /**
+     * Akce EncryptStorage! (Pošle příkaz EncryptStorage do zařízení)
+     */
     public function handleEncryptStorage()
     {
         $cmd = new EncryptStorageCommand();
-        $this->sendCommand($cmd);
 
-        $this->payload->command = $this->commandToPayload($cmd);
-        $this->isAjax() ? $this->redrawControl() : $this->redirect('this');
+        // Posle příkaz do zařízení a do webového prohlížeče
+        $this->processHandleCommand($cmd);
     }
 
+    /**
+     * Akce handleWipeData! (Pošle příkaz handleWipeData do zařízení)
+     */
     public function handleWipeData()
     {
         $cmd = new WipeDataCommand();
-        $this->sendCommand($cmd);
 
+        // Posle příkaz do zařízení a do webového prohlížeče
+        $this->processHandleCommand($cmd);
+    }
+
+    /**
+     *  Posle příkaz do zařízení a do webového prohlížeče a uložé ho do DB
+     * @param Command $cmd
+     */
+    protected function processHandleCommand(Command $cmd) {
+
+        // Poslat příkaz přes GCM
+        $this->sendCommand($cmd);
+        // Pošle ajaxem název příkazu apod.
         $this->payload->command = $this->commandToPayload($cmd);
+
+        // Pokud je ajax přidá do payloadu všechny snippety, jinak přesměruje na sebe
         $this->isAjax() ? $this->redrawControl() : $this->redirect('this');
     }
 
+    /**
+     * Pošle příkaz přes GCM do zařízení a uloží ho do DB
+     * @param Command $cmd
+     * @return \Gcm\Http\Response
+     * @throws \Gcm\Http\IlegalApiKeyException
+     * @throws \Gcm\Http\RuntimeException
+     */
     protected function sendCommand(Command $cmd) {
 
         if(!$this->device)
@@ -297,6 +376,11 @@ class HomepagePresenter extends BasePresenter
         return $this->gcm->send($message);
     }
 
+    /**
+     * Vrátí název a potřebná data z příkazu pro AJAXovou odpověd
+     * @param Command $command
+     * @return array
+     */
     protected function commandToPayload(Command $command) {
         $ret = ['id' => $command->getId()];
         switch($command->getType()) {

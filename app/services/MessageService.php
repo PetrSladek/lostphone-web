@@ -1,9 +1,9 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: Peggy
- * Date: 22.3.2015
- * Time: 13:35
+ * Služba pro práci se zprávami
+ *
+ * @package LostPhone
+ * @author Petr Sládek <xslade12@stud.fit.vutbr.cz>
  */
 
 
@@ -34,15 +34,19 @@ class MessageService
 {
 
     /**
+     * Doctrine Entity manažer
      * @var EntityManager
+     * @inject Připojí se sám z DI kontejneru
      */
-    protected $em;
+    public $em;
 
 
     /**
+     * Služba pro práci s obrázky
      * @var ImageService
+     * @inject Připojí se sám z DI kontejneru
      */
-    protected $imageService;
+    public $imageService;
 
 
     public function __construct(EntityManager $em, ImageService $imageService)
@@ -51,26 +55,41 @@ class MessageService
         $this->imageService = $imageService;
     }
 
+
+    /**
+     * Zaznamená ověření odeslaného příkazu
+     *
+     * @param int $id
+     * @param DateTime|string $date
+     * @param Device $device
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     */
     public function ackCommand($id, $date, $device) {
-        /** @var Device $device */
-        /** @var Command $cmd */
+        // Najde příkaz podle ID
         $cmd = $this->em->find( Command::getClassName(), $id );
+        /** @var Command $cmd */
+
+        // Pokud oveření přišl o z jiného zařízení naž na které bylo odesláno vyhodím vyjímku
         if($cmd->getDevice() != $device)
             throw new InvalidStateException("Command sended to {$cmd->getDevice()->getGcmId()}, but acked from {$device->getGcmId()}");
 
-
+        // Příkaz byl potvrzen
         $cmd->setDateAck( DateTime::from($date) );
-        if($cmd instanceof LockCommand)
+        if($cmd instanceof LockCommand) // Pokud šlo o lock command, nastavim zařízení jako uzamknnuté
             $device->setLocked(true);
     }
 
     /**
+     * Zpracuje příchozí data z HTTP či GCM
      * @param Device $device
      * @param \stdClass $data
      * @return GotchaMessage|LocationMessage|PongMessage|RegistrationMessage|RingingTimeoutMessage|UnlockMessage|WrongPassMessage
      */
     public function proccessRecievedData(&$device, $data)
     {
+        // Podle typu vytvoří instanci zprávy
         switch ($data->type) {
             case Message::TYPE_PONG:
                 $msg = new PongMessage();
@@ -84,6 +103,7 @@ class MessageService
                 $msg->setBrand($data->brand);
                 $msg->setModel($data->model);
 
+                // Pokud zařízení už existuje použijeme ho, jinak vytvoříme nové
                 $device = $this->em->getRepository(Device::getClassName())->findOneBy(['identifier' => $msg->getIdentifier()]);
                 if (!$device) {
                     $device = new Device();
@@ -94,7 +114,7 @@ class MessageService
                 $device->setRegistrationMessage($msg);
 
 
-                // najdi ownera podle emailu
+                // najdi ownera podle google account emailu
                 $owner = $this->em->getRepository(User::getClassName())->findOneBy(['googleEmail' => $msg->getGoogleAccountEmail()]);
                 if ($owner)
                     $device->setOwner($owner);

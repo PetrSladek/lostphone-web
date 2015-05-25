@@ -1,4 +1,10 @@
 <?php
+/**
+ * Presenter, se stránkou přihlášení do aplikace
+ *
+ * @package LostPhone
+ * @author Petr Sládek <xslade12@stud.fit.vutbr.cz>
+ */
 
 namespace App\Presenters;
 
@@ -10,13 +16,13 @@ use Kdyby\Google\Google;
 use Tracy\Debugger;
 
 
-/**
- * Sign in/out presenters.
- */
 class SignPresenter extends BasePresenter
 {
 
-    /** @var Google @inject */
+    /**
+     * @var Google
+     * @inject Pripojí se sám z DI contejneru
+     */
     public $google;
 
     /** @var EntityManager @inject */

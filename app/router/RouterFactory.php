@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * Továrnička na routy
+ *
+ * @package LostPhone
+ * @author Petr Sládek <xslade12@stud.fit.vutbr.cz>
+ */
+
 namespace App;
 
 use Nette,

@@ -1,4 +1,10 @@
 <?php
+/**
+ * Hlavní presenter, který zajištujě vše co je potřeba na všech stránkách aplikace
+ *
+ * @package LostPhone
+ * @author Petr Sládek <xslade12@stud.fit.vutbr.cz>
+ */
 
 namespace App\Presenters;
 
@@ -10,26 +16,39 @@ use Nette\Application\UI\Presenter;
 use Nette\Utils\ArrayHash;
 use Nette\Forms\Controls;
 
-/**
- * Base presenter for all application presenters.
- */
+
 abstract class BasePresenter extends Presenter
 {
 
     /**
-     * @var User Prihlaseny uzivatel
+     * Prihlaseny uzivatel
+     * @var User
      */
     public $me;
 
-    /** @var EntityManager @inject */
+    /**
+     * Doctrine Entity manažer
+     * @var EntityManager
+     * @inject Připojí se sám z DI kontejneru
+     */
     public $em;
 
-    /** @var ImageService @inject */
+    /**
+     * Služba pro práci s obrázky
+     * @var ImageService
+     * @inject Připojí se sám z DI kontejneru
+     */
     public $imageService;
 
-    /** @var ArrayHash */
+    /**
+     * Parametry z konfigurace v config.local.neon a config.neon
+     * @var ArrayHash
+     */
     public $config;
 
+    /**
+     * Metoda, která se spouští na začátku životního cyklu HTTP requestu
+     */
     protected function startup()
     {
         parent::startup();
@@ -43,15 +62,27 @@ abstract class BasePresenter extends Presenter
 
     }
 
+    /**
+     * Vytváření šablony
+     * @return \Nette\Application\UI\ITemplate
+     */
     protected function createTemplate()
     {
         $template =  parent::createTemplate();
+
+        // Připojíme helper na vypsání URL adresy miniatury
         $template->registerHelper('thumb', $this->thumbLink);
 
         return $template;
     }
 
 
+    /**
+     * Helper, který vrátí URL adresu zmenšeniny obrázku
+     * @param Image $entity Entita obrázku z databáze
+     * @param string $type Typ zmenšeniny z konfigurace
+     * @return string URL adresa zacachované zmenšeniny obrázku
+     */
     public function thumbLink(Image $entity, $type = 'thumb') {
         try {
             return $this->imageService->getThumbnailUrl($entity->getId(), $entity->getFilename(), $type);
@@ -61,8 +92,11 @@ abstract class BasePresenter extends Presenter
     }
 
 
-
-
+    /**
+     * Metoda pro upravení renderedu formuláře na styl Bootstrap3
+     * @param $form Instance formuláře
+     * @param bool $ajax Má se formulář odesálat ajaxem?
+     */
     public function prepareRenderer(&$form, $ajax = false) {
         // setup form rendering
         $renderer = $form->getRenderer();
