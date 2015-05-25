@@ -120,7 +120,9 @@
             <div class="message-title">
                 <small>{$message->dateSent->format('j.n.Y H:i:s')}</small><br />
                 Pokus o odemčení!
-                <button n:if="$message->frontPhoto" type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#modal-message-{$message->id}">Otevřít</button>
+                <div n:if="$message->frontPhoto">
+                    <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#modal-message-{$message->id}">Otevřít</button>
+                <div>
             </div>
         {elseif $message->isType($message::TYPE_LOCATION)}
             <div class="message-icon location">
@@ -129,7 +131,9 @@
             <div class="message-title">
                 <small>{$message->dateSent->format('j.n.Y H:i:s')}</small><br />
                 Lokalizováno{* na <strong>{$message->lat}</strong>, <strong>{$message->lng}</strong>*}
-                <button type="button" class="btn btn-primary" data-position-lat="{$message->lat}" data-position-lng="{$message->lng}" data-device-name="{$message->device->name}">Ukázat na mapě</button>
+                <div>
+                    <button type="button" class="btn btn-primary btn-xs"" data-position-lat="{$message->lat}" data-position-lng="{$message->lng}" data-device-name="{$message->device->name}">Ukázat na mapě</button>
+                </div>
             </div>
         {elseif $message->isType($message::TYPE_SIMSTATECHANGED)}
             <div class="message-icon simstatechanged">
@@ -138,7 +142,9 @@
             <div class="message-title">
                 <small>{$message->dateSent->format('j.n.Y H:i:s')}</small><br />
                 Stav SIM karty
-                <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#modal-message-{$message->id}">Otevřít</button>
+                <div>
+                    <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#modal-message-{$message->id}">Otevřít</button>
+                </div>
             </div>
 
         {elseif $message->isType($message::TYPE_LOG)}
@@ -148,7 +154,9 @@
             <div class="message-title">
                 <small>{$message->dateSent->format('j.n.Y H:i:s')}</small><br />
                 Výpis volání a SMS
-                <button type="button" class="btn btn-primary  btn-xs" data-toggle="modal" data-target="#modal-message-{$message->id}">Otevřít</button>
+                <div>
+                    <button type="button" class="btn btn-primary  btn-xs" data-toggle="modal" data-target="#modal-message-{$message->id}">Otevřít</button>
+                </div>
             </div>
         {/if}
         </div>
