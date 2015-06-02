@@ -95,9 +95,6 @@ class WebSocketServerCommand extends \Symfony\Component\Console\Command\Command 
                 $now = new DateTime();
                 $data = $bucket->getData();
 
-                if ($output->isVerbose())
-                    $output->writeln("[{$now->format('j.n.Y H:i:s')}] Message: " . $data['message']);
-
                 // Rozkoduju JSON data
                 $payload = Json::decode($data['message']);
 
@@ -105,6 +102,9 @@ class WebSocketServerCommand extends \Symfony\Component\Console\Command\Command 
                 if($payload->type == 'newDeviceListening') {
                     $deviceId = $payload->data;
                     $connections[$deviceId] = $node = $bucket->getSource()->getConnection()->getCurrentNode();
+
+                    if ($output->isVerbose())
+                        $output->writeln("[{$now->format('j.n.Y H:i:s')}] Device {$deviceId} listening now!");
 
                     $this->server->send("Zaregistroval sis zasilani", $node); // Poslu mu zpet informaci zpravu
                 }
@@ -116,6 +116,10 @@ class WebSocketServerCommand extends \Symfony\Component\Console\Command\Command 
                         $deviceId = $msg->getDevice()->getId();
                         // Podle DeviceID ze zpravy najdu Websocket klienta
                         $node = $connections[$deviceId];
+
+                        if ($output->isVerbose())
+                            $output->writeln("[{$now->format('j.n.Y H:i:s')}] New GCM Message ".$msg::getClassName() ." for device {$deviceId}");
+
                         // a dam mu vedet ze ma v DB novou zpravu
                         $this->server->send("newMessage", $node);
                     }
