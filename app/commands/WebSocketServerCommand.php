@@ -104,7 +104,7 @@ class WebSocketServerCommand extends \Symfony\Component\Console\Command\Command 
                     $connections[$deviceId] = $node = $bucket->getSource()->getConnection()->getCurrentNode();
 
                     if ($output->isVerbose())
-                        $output->writeln("[{$now->format('j.n.Y H:i:s')}] Device {$deviceId} listening now!");
+                        $output->writeln("[{$now->format('j.n.Y H:i:s')}] Device #{$deviceId} listening now!");
 
                     $this->server->send("Zaregistroval sis zasilani", $node); // Poslu mu zpet informaci zpravu
                 }
@@ -118,7 +118,7 @@ class WebSocketServerCommand extends \Symfony\Component\Console\Command\Command 
                         $node = $connections[$deviceId];
 
                         if ($output->isVerbose())
-                            $output->writeln("[{$now->format('j.n.Y H:i:s')}] New GCM Message ".$msg::getClassName() ." for device {$deviceId}");
+                            $output->writeln("[{$now->format('j.n.Y H:i:s')}] New GCM Message ".$msg::getClassName() ." from device #{$deviceId}");
 
                         // a dam mu vedet ze ma v DB novou zpravu
                         $this->server->send("newMessage", $node);
