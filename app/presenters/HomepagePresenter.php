@@ -253,6 +253,7 @@ class HomepagePresenter extends BasePresenter
 
         // Překreslím snippet se zprávami (tím se přidá do ajax payloadu)
         $this->redrawControl('messages');
+        $this->redrawControl('modals');
 
         // Pokud není ajax přesměruju na sebe
         !$this->isAjax() ?  $this->redirect('this') : null;
