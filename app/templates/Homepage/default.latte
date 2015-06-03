@@ -111,7 +111,7 @@
             </div>
         {elseif $message->isType($message::TYPE_WRONGPASS)}
             {if $message->frontPhoto}
-            <img class="message-icon" src="{$message->frontPhoto|thumb:mini}" alt="foto z predni kamery" />
+            <img class="message-icon" src="{$message->frontPhoto|thumb:mini}" style="transform: rotate(-90deg)" alt="foto z predni kamery" />
             {else}
             <div class="message-icon wrongpass">
                 <i class="fa fa-lock"></i>
@@ -138,7 +138,7 @@
         {elseif $message->isType($message::TYPE_SIMSTATECHANGED)}
             <div class="message-icon simstatechanged">
                 <i class="fa fa-credit-card"></i>
-            </div>
+            </div
             <div class="message-title">
                 <small>{$message->dateSent->format('j.n.Y H:i:s')}</small><br />
                 Stav SIM karty
@@ -177,7 +177,7 @@
                   </div>
                   <div class="modal-body">
 
-                    <img src="{$message->frontPhoto|thumb:detail}" alt="foto z predni kamery" />
+                    <img src="{$message->frontPhoto|thumb:detail}" style="transform: rotate(-90deg)" alt="foto z predni kamery" />
 
                   </div>
                   <div class="modal-footer">
@@ -200,7 +200,7 @@
                     <pre>
                     Tel. číslo: {$message->phoneNumber}
                     IMEI: {$message->imei}
-                    SubscriberID: {$message->subscriberId}
+                    IMSI: {$message->subscriberId}
                     Síť SIM karty:
                         {$message->simOperator}
                         {$message->simOperatorName}
